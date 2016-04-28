@@ -1,0 +1,29 @@
+{
+  "name": "swen301-group-project",
+  "version": "0.0.0",
+  "main": "server.js",  
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nerdenough/swen301-group-project.git"
+  },
+  "bugs": {
+    "url": "https://github.com/nerdenough/swen301-group-project/issues"
+  },
+  "homepage": "https://github.com/nerdenough/swen301-group-project#readme",
+  "scripts": {
+    "start": "node server.js",
+    "test": "gulp test"
+  },
+  "dependencies": {
+    "body-parser": "^1.15.0",
+    "cookie-parser": "^1.4.1",
+    "express": "^4.13.4",
+    "morgan": "^1.7.0",
+    "pug": "^2.0.0-alpha1"
+  },
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-sass": "^2.2.0",
+    "gulp-sourcemaps": "^1.6.0"
+  }
+}

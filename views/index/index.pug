@@ -2,3 +2,84 @@ extends ../shared/layout.pug
 
 block content
   h1= title
+  form(action='/login',method='post')
+    fieldset
+      h2= 'Login'
+
+      strong= 'Username '
+      input(
+        type='text'
+        name='usernameinput'
+        placeholder='username'
+        required
+      )
+
+      br
+
+      strong= 'Password '
+      input(
+        type='password'
+        name='passwordinput'
+        placeholder='password'
+        required
+      )
+
+      br
+
+      button= 'submit'
+
+  form(action='/signup',method='post')
+    fieldset
+      h2= 'Signup'
+
+      strong= 'Username '
+      text='Manager'
+      input(
+        type='radio'
+        name='role'
+        value='Manager'
+        checked
+        required
+      )
+
+      text='Clerk'
+      input(
+        type='radio'
+        name='role'
+        value='Clerk'
+        required
+      )
+
+      br
+
+      strong= 'Password '
+      input(
+        type='password'
+        name='passwordinput'
+        placeholder='password'
+        required
+      )
+
+      br
+
+      strong= 'Re-type password '
+      input(
+        type='password'
+        name='retypepassword'
+        placeholder='re-type password'
+        required
+      )
+
+      br
+
+      strong= 'Email '
+      input(
+        type='email'
+        name='emailinput'
+        placeholder='recovery email'
+        required
+      )
+
+      br
+
+      button= 'submit'

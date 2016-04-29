@@ -32,8 +32,7 @@ function getPassword(i){
   return users.groups[i].pass;
 }
 
-
-//router.use(express.cookieParser());
+//the seesion assigned to whoever is logged in
 router.use(session({
   secret: '1234567890QWERTY',
   resave: false,
@@ -61,10 +60,7 @@ if(getFileRealPath('users.json')) {
   });
 };
 
-//var data = fs.readFileSync('users.txt');
-//var users = data.toSring();
 
-// GET: /
 router.get('/', function(req, res) {
   if(!req.session.user) {
     res.render('index/index', {
@@ -83,7 +79,7 @@ router.post('/login', function(req, res) {
         var pass = req.body.passwordinput;
         var i = getIndex(name);
         if (i >=0) {
-          if (users[i].groups.pass === pass) {
+          if (users.groups[i].pass === pass) {
             req.session.user = name;
             res.render('index/main', {
               title: 'KPSmart - Home'

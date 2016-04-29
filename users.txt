@@ -1,1 +1,0 @@
-[{"user":"Manager", "pass":"mane", "email":"mail@testy.com"},{"user":"Clerk", "pass":"cler", "email":"mail@testy.com"}]

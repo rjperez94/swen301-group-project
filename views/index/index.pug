@@ -4,36 +4,35 @@ block content
   h1= title
   form(action='/login',method='post')
     fieldset
-      h2= 'Login'
-
-      strong= 'Username '
+      h2 Login
+      strong Username
       input(
         type='text'
-        name='usernameinput'
-        placeholder='username'
+        name='username'
+        placeholder='Username'
         required
       )
 
       br
 
-      strong= 'Password '
+      strong Password
       input(
         type='password'
-        name='passwordinput'
-        placeholder='password'
+        name='password'
+        placeholder='Password'
         required
       )
 
       br
 
-      button= 'submit'
+      button Submit
 
   form(action='/signup',method='post')
     fieldset
-      h2= 'Signup'
+      h2 Signup
 
-      strong= 'Username '
-      text='Manager'
+      strong Username
+      span Manager
       input(
         type='radio'
         name='role'
@@ -42,7 +41,7 @@ block content
         required
       )
 
-      text='Clerk'
+      span Clerk
       input(
         type='radio'
         name='role'
@@ -52,7 +51,7 @@ block content
 
       br
 
-      strong= 'Password '
+      strong Password
       input(
         type='password'
         name='passwordinput'
@@ -62,7 +61,7 @@ block content
 
       br
 
-      strong= 'Re-type password '
+      strong Re-type password
       input(
         type='password'
         name='retypepassword'
@@ -72,7 +71,7 @@ block content
 
       br
 
-      strong= 'Email '
+      strong Email
       input(
         type='email'
         name='emailinput'
@@ -82,4 +81,4 @@ block content
 
       br
 
-      button= 'submit'
+      button Submit

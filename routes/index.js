@@ -1,6 +1,5 @@
 'use strict';
 var express = require('express');
-var session = require('express-session');
 var fs = require("fs");
 var router = express.Router();
 
@@ -32,13 +31,6 @@ function getPassword(i){
   return users.groups[i].pass;
 }
 
-//the seesion assigned to whoever is logged in
-router.use(session({
-  secret: '1234567890QWERTY',
-  resave: false,
-  saveUninitialized: true,
-}));
-
 if(getFileRealPath('users.json')) {
   fs.open('users.json', 'rs+', function(err, fd) {
      if (err) {
@@ -67,38 +59,41 @@ router.get('/', function(req, res) {
       title: 'KPSmart - Restricted Access'
     });
   } else {
-    res.render('index/main', {
-      title: 'KPSmart - Home'
-    });
+    res.redirect('/main');
   }
 });
 
 router.post('/login', function(req, res) {
     if (!req.session.user) { // Check if user logged in
-        var name = req.body.usernameinput;
-        var pass = req.body.passwordinput;
-        var i = getIndex(name);
-        if (i >=0) {
-          if (users.groups[i].pass === pass) {
-            req.session.user = name;
-            res.render('index/main', {
-              title: 'KPSmart - Home'
-            });
-          } else {
-            res.render('index/index', {
-              title: 'KPSmart - Restricted Access'
-            });
-          }
+      var i = getIndex(req.body.username);
+      if (i >=0) {
+        if (users.groups[i].pass === req.body.password) {
+          req.session.user = req.body.username;
+          req.session.save();
+          console.log(req.session);
+          res.redirect('/main');
         } else {
           res.render('index/index', {
             title: 'KPSmart - Restricted Access'
           });
         }
+      } else {
+        res.render('index/index', {
+          title: 'KPSmart - Restricted Access'
+        });
+      }
     } else {
-      res.render('index/main', {
-        title: 'KPSmart - Home'
-      });
+      res.redirect('/main');
     }
+});
+
+// GET: /main
+router.get('/main', function(req, res) {
+  console.log(req.session);
+  res.render('index/main', {
+    title: 'KPSmart - Home',
+    username: req.session.user
+  });
 });
 
 router.post('/signup', function(req, res) {

@@ -3,7 +3,8 @@ var path = require('path');
 var http = require('http');
 var express = require('express');
 var bodyParser = require('body-parser');
-var cookieParser = require('cookie-parser');
+//var cookieParser = require('cookie-parser');
+var session = require('express-session');
 var logger = require('morgan');
 
 // Custom routes
@@ -19,7 +20,12 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
-app.use(cookieParser());
+app.use(session({
+  secret: 'todo',
+  resave: false,
+  saveUninitialized: false,
+  cookie: {secure: false}
+}));
 
 app.use(express.static(path.join(__dirname, 'public')));
 

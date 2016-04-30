@@ -31,7 +31,7 @@ block content
     fieldset
       h2 Signup
 
-      strong Username
+      strong Username *
       span Manager
       input(
         type='radio'
@@ -51,7 +51,7 @@ block content
 
       br
 
-      strong Password
+      strong Password *
       input(
         type='password'
         name='passwordinput'
@@ -61,7 +61,7 @@ block content
 
       br
 
-      strong Re-type password
+      strong Re-type password *
       input(
         type='password'
         name='retypepassword'
@@ -71,7 +71,7 @@ block content
 
       br
 
-      strong Email
+      strong Email *
       input(
         type='email'
         name='emailinput'
@@ -80,5 +80,8 @@ block content
       )
 
       br
+
+      p
+        strong=  'Fields marked with * are required'
 
       button Submit

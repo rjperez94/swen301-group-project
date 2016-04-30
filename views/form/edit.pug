@@ -1,0 +1,62 @@
+extends ../shared/layout.pug
+
+block content
+  h1= title
+  include ../shared/login_info.pug
+  include ../shared/nav.pug
+
+  form(action='/edit_process',method='post')
+    fieldset
+      strong Username *
+      input(
+        type='text'
+        name='role'
+        value= username
+        disabled
+        required
+      )
+
+      br
+
+      strong CURRENT Password *
+      input(
+        type='password'
+        name='currentpasswordinput'
+        placeholder='current password'
+        required
+      )
+
+      br
+
+      strong NEW Password
+      input(
+        type='password'
+        name='passwordinput'
+        placeholder='new password'
+      )
+
+      br
+
+      strong Re-type NEW password
+      input(
+        type='password'
+        name='retypepassword'
+        placeholder='re-type new password'
+      )
+
+      br
+
+      strong Email *
+      input(
+        type='email'
+        name='emailinput'
+        value= email
+        placeholder='recovery email'
+        required
+      )
+      br
+
+      p
+        strong=  'Fields marked with * are required'
+
+      button Submit

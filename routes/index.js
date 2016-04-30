@@ -1,9 +1,15 @@
 'use strict';
+var parseString = require('xml2js').parseString;
 var express = require('express');
 var fs = require("fs");
 var router = express.Router();
 
+var userPath = 'users.json';
+var logPath = 'sample1.xml';
 var users;
+var logData;
+var currentMaxID = 0;
+var eventTypes = ['cost','price','mail','timelimit','discontinue'];
 
 //check if file exist
 function getFileRealPath(path){
@@ -31,27 +37,86 @@ function getPassword(i){
   return users.groups[i].pass;
 }
 
-//load file
-if(getFileRealPath('users.json')) {
-  fs.open('users.json', 'rs+', function(err, fd) {
-     if (err) {
-         return console.error(err);
-     } else {
-       fs.readFile('users.json', function (err, data) {
-        if (err) {
-           return console.error(err);
+//get ID of latest event
+//FORMAT: logData[type][#index][attribute][0]
+function getMaxID(type) {
+  for (var i = 0; i < logData[type].length; i++) {
+    var num = parseInt(logData[type][i]['ID'][0]);
+    if (num > currentMaxID) {
+       currentMaxID = num;
+    }
+  }
+}
+
+//get Event in logData
+//FORMAT: logData[type][#index][attribute][0]
+function getEvent(uID) {
+  for (var i = 0; i < eventTypes.length; i++) {
+    var type = eventTypes[i];
+    for (var j = 0; j < logData[type].length; j++) {
+      if (logData[type][j]['ID'][0] === uID.toString()) {
+        return logData[type][j];
+      }
+    }
+  }
+
+  return null;
+}
+
+//get Attribute in event
+//FORMAT: logData[type][#index][attribute][0]
+function getAttribute(evt,attr) {
+  return evt[attr][0];
+}
+
+//load user file
+if(getFileRealPath(userPath)) {
+  fs.open(userPath, 'rs+', function(err, fd) {
+    if (err) {
+      console.error(err);
+    }
+    fs.readFile(userPath, function (err, data) {
+      if (err) {
+        console.error(err);
+      }
+      users = JSON.parse(data.toString());
+      fs.close(fd, function(err){
+        if (err){
+          console.log(err);
         }
-        users = JSON.parse(data.toString());
+      });
+    });
+  });
+}
+
+//load log file
+if(getFileRealPath(logPath)) {
+  fs.open(logPath, 'r+', function(err, fd) {
+    if (err) {
+      return console.error(err);
+    }
+
+    fs.readFile(logPath, function (err, data) {
+      if (err) {
+        return console.error(err);
+      }
+      parseString(data.toString(), function (err, result) {
+        logData = result['simulation'];
+        //get max
+        for (var i = 0; i < eventTypes.length; i++) {
+          getMaxID(eventTypes[i]);
+        }
+
         fs.close(fd, function(err){
           if (err){
-             console.log(err);
+            console.log(err);
           }
-          //console.log("File closed successfully.");
-       });
+        });
       });
-     }
+    });
+
   });
-};
+}
 
 // GET: /
 router.get('/', function(req, res) {
@@ -70,12 +135,12 @@ router.get('/main', function(req, res) {
 
   if(!req.session.user) { //check for login
     res.redirect('/');
+  } else {
+    res.render('index/main', {
+      title: 'KPSmart - Home',
+      username: req.session.user
+    });
   }
-
-  res.render('index/main', {
-    title: 'KPSmart - Home',
-    username: req.session.user
-  });
 });
 
 // POST: /login
@@ -224,7 +289,7 @@ router.post('/edit_process', function(req, res) {
       text+='{"user":"'+role+'", "pass":"'+currPass+'", "email":"'+email+'"}]}';
     } else {
       text+='{"user":"'+role+'", "pass":"'+newPass+'", "email":"'+email+'"}]}';
-      feedback+='Password changed\n';
+      feedback.push('Password changed');
     }
 
     fs.writeFile('users.json', text,  function(err) {
@@ -238,6 +303,37 @@ router.post('/edit_process', function(req, res) {
     title: 'KPSmart - Edit Credentials',
     username: req.session.user,
     feedback: feedback
+  });
+});
+
+//GET: /test
+router.get('/test', function(req, res) {
+  fs.open('sample1.xml', 'r+', function(err, fd) {
+     if (err) {
+         return console.error(err);
+     } else {
+       fs.readFile('sample1.xml', function (err, data) {
+        if (err) {
+           return console.error(err);
+        }
+
+        parseString(data.toString(), function (err, result) {
+            try {
+              console.log(logData['cost'][0]);
+              var evt = getEvent(1);
+              console.log(evt);
+              console.log(getAttribute(evt,'from'));
+            } catch (e) {}
+        });
+
+        res.redirect('/');
+        fs.close(fd, function(err){
+          if (err){
+             console.log(err);
+          }
+       });
+      });
+     }
   });
 });
 

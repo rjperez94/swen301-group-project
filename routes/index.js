@@ -1,11 +1,12 @@
 'use strict';
 var parseString = require('xml2js').parseString;
 var express = require('express');
-var fs = require("fs");
+var fs = require('fs');
 var router = express.Router();
+var routeFinderIntl = require('../models/routeFinderIntl.js');
 
 var userPath = 'users.json';
-var logPath = 'sample1.xml';
+var logPath = 'sample2.xml';
 var users;
 var logData;
 var currentMaxID = 0;
@@ -308,33 +309,14 @@ router.post('/edit_process', function(req, res) {
 
 //GET: /test
 router.get('/test', function(req, res) {
-  fs.open('sample1.xml', 'r+', function(err, fd) {
-     if (err) {
-         return console.error(err);
-     } else {
-       fs.readFile('sample1.xml', function (err, data) {
-        if (err) {
-           return console.error(err);
-        }
+  try {
+    //test dijkstra algo
+    var graph = new routeFinderIntl(logData['price'],logData['cost']);
+    var obj = graph.getPath('Wellington','Japan','International Air',5,5);
+    console.log('RESULT '+obj['path']+' '+obj['cost']);
+  } catch (e) {}
 
-        parseString(data.toString(), function (err, result) {
-            try {
-              console.log(logData['cost'][0]);
-              var evt = getEvent(1);
-              console.log(evt);
-              console.log(getAttribute(evt,'from'));
-            } catch (e) {}
-        });
-
-        res.redirect('/');
-        fs.close(fd, function(err){
-          if (err){
-             console.log(err);
-          }
-       });
-      });
-     }
-  });
+  res.redirect('/');
 });
 
 module.exports = router;

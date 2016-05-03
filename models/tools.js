@@ -24,13 +24,19 @@ function tools () {
 
   //get ID of latest event
   //FORMAT: logData[type][#index][attribute][0]
-  this.getMaxID = function(logData, type) {
-    for (var i = 0; i < logData[type].length; i++) {
-      var num = parseInt(logData[type][i]['ID'][0]);
-      if (num > currentMaxID) {
-         currentMaxID = num;
+  this.getMaxID = function(logData, eventTypes) {
+    var currentMaxID = 0;
+    for (var i = 0; i < eventTypes.length; i++) {
+      var type = eventTypes[i];
+
+      for (var j = 0; j < logData[type].length; j++) {
+        var num = parseInt(logData[type][j]['ID'][0]);
+        if (num > currentMaxID) {
+           currentMaxID = num;
+        }
       }
     }
+    return currentMaxID;
   }
 
   //get Event in logData
@@ -52,6 +58,16 @@ function tools () {
   //FORMAT: logData[type][#index][attribute][0]
   this.getAttribute = function(evt,attr) {
     return evt[attr][0];
+  }
+
+  //get Company name of Firms in Path
+  //FORMAT: logData[type][#index][attribute][0]
+  this.getCompany = function(firms) {
+    var result = [];
+    for (var i = 0; i < firms.length; i++) {
+      result.push(firms[i]['company']);
+    }
+    return result;
   }
 }
 

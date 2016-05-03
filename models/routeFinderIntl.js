@@ -1,13 +1,11 @@
 const Graph = require('node-dijkstra');
 
-function routeFinderIntl (price,cost) {
+function routeFinderIntl (price,local) {
   //prices[#index][attr][0]
   this.prices = price;
-  //costs[#index][attr][0]
-  //NOTE: costs must exclude discontinued
-  this.costs = cost;
 
   this.neigh = {};
+
 
   this.getPath = function (fro,to,pri,wei,vol) {
     const route = new Graph();
@@ -16,7 +14,7 @@ function routeFinderIntl (price,cost) {
 
     for (var key in this.neigh) {
       if (this.neigh.hasOwnProperty(key)) {
-        console.log(key);
+        //console.log(key);
         route.addNode(key, this.objectify(this.neigh[key]));
       }
     }
@@ -30,7 +28,7 @@ function routeFinderIntl (price,cost) {
       var price = array[i][1];
       result[to] = parseFloat(price);
     }
-    console.log(result);
+    //console.log(result);
     return result;
   };
 
@@ -49,8 +47,7 @@ function routeFinderIntl (price,cost) {
         }
       }
     }
-  };
-
+  }
 
 }
 

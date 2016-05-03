@@ -307,4 +307,32 @@
     <weightcost>3</weightcost>
     <volumecost>3</volumecost>
   </price>
+  <cost>
+    <ID>31</ID>
+    <company>Air NZ</company>
+    <to>Japan</to>
+    <from>Sydney</from>
+    <type>Air</type>
+    <weightcost>6</weightcost>
+    <volumecost>6</volumecost>
+    <maxWeight>350</maxWeight>
+    <maxVolume>50</maxVolume>
+    <duration>16</duration>
+    <frequency>36</frequency>
+    <day>Thursday</day>
+  </cost>
+  <cost>
+    <ID>32</ID>
+    <company>Air NZ</company>
+    <to>Sydney</to>
+    <from>Wellington</from>
+    <type>Air</type>
+    <weightcost>6</weightcost>
+    <volumecost>6</volumecost>
+    <maxWeight>350</maxWeight>
+    <maxVolume>50</maxVolume>
+    <duration>16</duration>
+    <frequency>36</frequency>
+    <day>Thursday</day>
+  </cost>
 </simulation>

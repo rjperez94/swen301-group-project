@@ -5,12 +5,14 @@ var fs = require('fs');
 var router = express.Router();
 
 var routeFinderIntl = require('../models/routeFinderIntl.js');
+var costCalculatorIntl = require('../models/costCalculator.js');
 var tools = new (require('../models/tools.js'));
 
 var userPath = 'users.json';
 var logPath = 'sample2.xml';
 var currentMaxID = 0;
 var eventTypes = ['cost','price','mail','timelimit','discontinue'];
+var local = ['Auckland', 'Hamilton', 'Rotorua', 'Palmerston North', 'Wellington', 'Christchurch', 'Dunedin'];
 
 var users;
 var logData;
@@ -63,6 +65,9 @@ if(tools.getFileRealPath(logPath)) {
 
 // GET: /
 router.get('/', function(req, res) {
+  //getMaxID
+  currentMaxID = tools.getMaxID(logData,eventTypes);
+
   if(!req.session.user) { //check for login
     res.render('index/index', {
       title: 'KPSmart - Restricted Access'
@@ -90,14 +95,14 @@ router.get('/main', function(req, res) {
 router.post('/login', function(req, res) {
   ////////////////////TRY CATCH IS TEMPORARY REMEDY ONLY
   //GETS TYPE ERROR IF CODE INSIDE TRY CLAUSE IS USED ON ITS OWN
-  try {
+  //try {
     if (!req.session.user) { // Check if user logged in
-      var i = tools.getIndex(req.body.username);
+      var i = tools.getIndex(users,req.body.username);
       if (i >=0) {
         if (users.groups[i].pass === req.body.password) {
           req.session.user = req.body.username;
           req.session.save();
-          //console.log(req.session);
+          console.log(req.session);
           res.redirect('/main');
         } else {
           res.render('index/feedback', {
@@ -114,9 +119,9 @@ router.post('/login', function(req, res) {
     } else {
       res.redirect('/main');
     }
-  } catch(e){
-    res.redirect('/');
-  }
+  // } catch(e){
+  //   res.redirect('/');
+  // }
 
 
 });
@@ -251,12 +256,15 @@ router.post('/edit_process', function(req, res) {
 
 //GET: /test
 router.get('/test', function(req, res) {
-  try {
+  //try {
     //test dijkstra algo
-    var graph = new routeFinderIntl(logData['price'],logData['cost']);
+    var graph = new routeFinderIntl(logData['price'], local);
     var obj = graph.getPath('Wellington','Japan','International Air',5,5);
     console.log('RESULT '+obj['path']+' '+obj['cost']);
-  } catch (e) {}
+    var calculator = new costCalculatorIntl(logData['cost'], obj['path'], logData['discontinue'], local);
+    var expense = calculator.getTransport('International Air',5,5);
+    console.log('EXPENSES '+tools.getCompany(expense['firms'])+' '+expense['expenses']);
+  //} catch (e) {}
 
   res.redirect('/');
 });

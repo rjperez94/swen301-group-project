@@ -3,87 +3,33 @@ var parseString = require('xml2js').parseString;
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
+
 var routeFinderIntl = require('../models/routeFinderIntl.js');
+var tools = new (require('../models/tools.js'));
 
 var userPath = 'users.json';
 var logPath = 'sample2.xml';
-var users;
-var logData;
 var currentMaxID = 0;
 var eventTypes = ['cost','price','mail','timelimit','discontinue'];
 
-//check if file exist
-function getFileRealPath(path){
-  try {
-    return fs.realpathSync(path);
-  } catch(e){
-    return false;
-  }
-}
-
-//check username
-function getIndex(name){
-  if (users) {
-    for (var i = 0; users.groups.length; i++) {
-      if (users.groups[i].user === name) {
-        return i;
-      }
-    }
-  }
-  return -1;
-}
-
-//check pass
-function getPassword(i){
-  return users.groups[i].pass;
-}
-
-//get ID of latest event
-//FORMAT: logData[type][#index][attribute][0]
-function getMaxID(type) {
-  for (var i = 0; i < logData[type].length; i++) {
-    var num = parseInt(logData[type][i]['ID'][0]);
-    if (num > currentMaxID) {
-       currentMaxID = num;
-    }
-  }
-}
-
-//get Event in logData
-//FORMAT: logData[type][#index][attribute][0]
-function getEvent(uID) {
-  for (var i = 0; i < eventTypes.length; i++) {
-    var type = eventTypes[i];
-    for (var j = 0; j < logData[type].length; j++) {
-      if (logData[type][j]['ID'][0] === uID.toString()) {
-        return logData[type][j];
-      }
-    }
-  }
-
-  return null;
-}
-
-//get Attribute in event
-//FORMAT: logData[type][#index][attribute][0]
-function getAttribute(evt,attr) {
-  return evt[attr][0];
-}
+var users;
+var logData;
 
 //load user file
-if(getFileRealPath(userPath)) {
-  fs.open(userPath, 'rs+', function(err, fd) {
+if(tools.getFileRealPath(userPath)) {
+  fs.open(userPath, 'r+', function(err, fd) {
     if (err) {
-      console.error(err);
+      return console.error(err);
     }
     fs.readFile(userPath, function (err, data) {
       if (err) {
-        console.error(err);
+        return console.error(err);
       }
+
       users = JSON.parse(data.toString());
       fs.close(fd, function(err){
         if (err){
-          console.log(err);
+          return console.log(err);
         }
       });
     });
@@ -91,7 +37,7 @@ if(getFileRealPath(userPath)) {
 }
 
 //load log file
-if(getFileRealPath(logPath)) {
+if(tools.getFileRealPath(logPath)) {
   fs.open(logPath, 'r+', function(err, fd) {
     if (err) {
       return console.error(err);
@@ -103,14 +49,10 @@ if(getFileRealPath(logPath)) {
       }
       parseString(data.toString(), function (err, result) {
         logData = result['simulation'];
-        //get max
-        for (var i = 0; i < eventTypes.length; i++) {
-          getMaxID(eventTypes[i]);
-        }
 
         fs.close(fd, function(err){
           if (err){
-            console.log(err);
+            return console.log(err);
           }
         });
       });
@@ -150,7 +92,7 @@ router.post('/login', function(req, res) {
   //GETS TYPE ERROR IF CODE INSIDE TRY CLAUSE IS USED ON ITS OWN
   try {
     if (!req.session.user) { // Check if user logged in
-      var i = getIndex(req.body.username);
+      var i = tools.getIndex(req.body.username);
       if (i >=0) {
         if (users.groups[i].pass === req.body.password) {
           req.session.user = req.body.username;

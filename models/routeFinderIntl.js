@@ -15,10 +15,10 @@ function routeFinderIntl (price,cost) {
     //console.log(this.neigh);
 
     for (var key in this.neigh) {
-       if (this.neigh.hasOwnProperty(key)) {
-         console.log(key);
-          route.addNode(key, this.objectify(this.neigh[key]));
-       }
+      if (this.neigh.hasOwnProperty(key)) {
+        console.log(key);
+        route.addNode(key, this.objectify(this.neigh[key]));
+      }
     }
     return route.path(fro, to,{ cost: true });
   };

@@ -69,6 +69,22 @@ function tools () {
     }
     return result;
   }
+
+  //get all international cities
+  //NOTE: 'New Zealand' IS included in local
+  //FORMAT: prices[#index][attribute][0]
+  this.getIntlCities = function(prices, local) {
+    var result = [];
+    for (var i = 0; i < prices.length; i++) {
+      var to = prices[i]['to'][0];
+      if (local.indexOf(to) < 0) {  //not local
+        result.push(to);
+      }
+
+    }
+    return result;
+  }
+
 }
 
 module.exports = tools;

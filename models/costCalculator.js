@@ -41,8 +41,10 @@ function costCalculator (cost,path,discontinued,local) {
 
         //International standard priority requires that the mail be transferred by land or sea (unless air transfer is the only option).
         //this fulfills the unless clause
-        if (i === 0 && abort === false) {
+        if (i === 0 && abort === false && reserved.hasOwnProperty(h)) {
           transport.push(reserved[h]);
+        } else if (i === 0 && abort === false) {
+          return null;
         }
 
       }

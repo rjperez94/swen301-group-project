@@ -254,9 +254,29 @@ router.post('/edit_process', function(req, res) {
   });
 });
 
+//GET: /deliver
+router.get('/deliver', function(req, res) {
+  var localNZ = [];
+  for (var i = 0; i < local.length; i++) {
+    localNZ.push(local[i])
+  }
+  localNZ.push('New Zealand');
+
+  var internationalCities = tools.getIntlCities(logData['price'], localNZ);
+
+  console.log(local);
+  res.render('form/mail', {
+    title: 'KPSmart - Mail Delivery',
+    username: req.session.user,
+    priority: ['Standard', 'Air'],
+    scope: ['Local','International'],
+    locals: local,
+    intl: internationalCities
+  });
+});
+
 //GET: /test
 router.get('/test', function(req, res) {
-  //try {
     //test dijkstra algo
     var graph = new routeFinderIntl(logData['price'], local);
     var obj = graph.getPath('Wellington','Japan','International Air',5,5);
@@ -264,9 +284,8 @@ router.get('/test', function(req, res) {
     var calculator = new costCalculatorIntl(logData['cost'], obj['path'], logData['discontinue'], local);
     var expense = calculator.getTransport('International Air',5,5);
     console.log('EXPENSES '+tools.getCompany(expense['firms'])+' '+expense['expenses']);
-  //} catch (e) {}
 
-  res.redirect('/');
+    res.redirect('/');
 });
 
 module.exports = router;

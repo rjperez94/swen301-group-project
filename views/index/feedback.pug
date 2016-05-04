@@ -6,9 +6,11 @@ block content
     each val in feedback
       br
       text= val
-    a(
-      href='/'
-    ) Home
+
+    p
+      a(
+        href='/'
+      ) Home
   else
     include ../shared/login_info.pug
     include ../shared/nav.pug

@@ -13,7 +13,7 @@ function tools () {
   //check username
   this.getIndex = function(users, name){
     if (users) {
-      for (var i = 0; users.groups.length; i++) {
+      for (var i = 0; i < users.groups.length; i++) {
         if (users.groups[i].user === name) {
           return i;
         }
@@ -77,7 +77,7 @@ function tools () {
     var result = [];
     for (var i = 0; i < prices.length; i++) {
       var to = prices[i]['to'][0];
-      if (local.indexOf(to) < 0) {  //not local
+      if (local.indexOf(to) < 0 && result.indexOf(to) < 0 ) {  //not local and not in result yet
         result.push(to);
       }
 

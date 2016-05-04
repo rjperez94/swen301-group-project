@@ -1,62 +1,65 @@
 extends ../shared/layout.pug
+
 block content
   h1= title
   include ../shared/login_info.pug
   include ../shared/nav.pug
 
   form(action='/mail',method='post')
-    strong Origin *
-    select(name='from')
-      each val in locals
-        option (value= #{val})
-    br
-
-    strong Scope *
-    select(name= 'scope')
-      each val in scope
-        option (value= #{val})
-    br
-
-    strong Select One of:*
-    br
-    p
-      strong Local Destination
-      select(name= 'toLocal')
-        each val in locals
-          option (value= #{val})
+    fieldset
+      strong Origin *
+      select(name='from')
+        for val in localTo
+          option(value=val) #{val}
       br
 
-      strong International Destination
-      select(name= 'toIntl')
-        each val in intl
-          option (value= #{val})
+      strong Scope *
+      select(name= 'scope')
+        each val in scope
+          option(value=val) #{val}
+      br
       br
 
-    strong Priority *
-    select(name= 'priority')
-      each val in priority
-        option (value= #{val})
-    br
+      strong Select one of:*
+        br
+        strong Local Destination
+        select(name= 'toLocal')
+          each val in localTo
+            option(value=val) #{val}
+        br
 
-    strong Volume *
-    input(
-      type='number'
-      name='volume'
-      placeholder='weight in grams'
-      required
-    )
-    br
+        strong International Destination
+        select(name= 'toIntl')
+          each val in intl
+            option(value=val) #{val}
+        br
+        br
 
-    strong Weight *
-    input(
-      type='number'
-      name='weight'
-      placeholder='weight in grams'
-      required
-    )
-    br
+      strong Priority *
+      select(name= 'priority')
+        each val in priority
+          option(value=val) #{val}
+      br
 
-    p
-      strong=  'Fields marked with * are required'
+      strong Volume *
+      input(
+        type='number'
+        name='volume'
+        placeholder='volume in cubic centimetre'
+        required
+      )
+      br
 
-    button Submit
+      strong Weight *
+      input(
+        type='number'
+        name='weight'
+        placeholder='weight in grams'
+        required
+      )
+      br
+
+      p
+        strong=  'Fields marked with * are required'
+
+      button Submit

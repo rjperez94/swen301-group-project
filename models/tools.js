@@ -22,6 +22,29 @@ function tools () {
     return -1;
   }
 
+  //set active prices from bottom-up, IF NOT SET
+  //FORMAT: price[#index][attribute][0]
+  this.setActivePrices = function(price) {
+    var originToDest = {};
+    for (var i = price.length-1; i >= 0; i--) {
+      if (!price[i].hasOwnProperty('active')) { //check for property
+        var from = price[i]['from'][0];
+        var to = price[i]['to'][0];
+        if (originToDest.hasOwnProperty(from)) {  //check for redundancy of 'from'
+          var dest = originToDest[from];
+          if (dest.indexOf(to) >= 0) {  //check for destination exist, active to no
+            price[i]['active'] = ['No'];
+          } else {
+            price[i]['active'] = ['Yes'];
+          }
+        } else {
+          originToDest[from] = [to];
+          price[i]['active'] = ['Yes'];
+        }
+      }
+    }
+  }
+
   //get ID of latest event
   //FORMAT: logData[type][#index][attribute][0]
   this.getMaxID = function(logData, eventTypes) {
@@ -83,6 +106,20 @@ function tools () {
 
     }
     return result;
+  }
+
+  //getPrice
+  //FORMAT: prices[#index][attribute][0]
+  this.getPrice = function(prices,from,to,scopePriority,weight,volume) {
+    console.log(scopePriority);
+    for (var i = prices.length -1; i >= 0; i--) {
+      if (prices[i]['from'] === from &&
+      prices[i]['to'] === to &&
+      prices[i]['priority'] === scopePriority) {
+        return weight*prices[i]['weightcost']+volume*prices[i]['volumecost'];
+      }
+    }
+    return null;
   }
 
 }

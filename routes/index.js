@@ -1,10 +1,12 @@
 'use strict';
-var parseString = require('xml2js').parseString;
+var xml2js = require('xml2js');
+var parseString = xml2js.parseString;
+var builder = new xml2js.Builder();
 var express = require('express');
 var fs = require('fs');
 var router = express.Router();
 
-var routeFinderIntl = require('../models/routeFinderIntl.js');
+var routeFinder = require('../models/routeFinder.js');
 var costCalculatorIntl = require('../models/costCalculator.js');
 var tools = new (require('../models/tools.js'));
 
@@ -51,7 +53,7 @@ if(tools.getFileRealPath(logPath)) {
       }
       parseString(data.toString(), function (err, result) {
         logData = result['simulation'];
-
+        tools.setActivePrices(logData['price']);
         fs.close(fd, function(err){
           if (err){
             return console.log(err);
@@ -269,16 +271,71 @@ router.get('/deliver', function(req, res) {
   }
 });
 
+//POST: /mail
+router.post('/mail', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    var from = req.body.from;
+    var scope = req.body.scope;
+    var priority = req.body.priority;
+    var volume = req.body.volume;
+    var weight = req.body.weight;
+    var to;
+
+    if(scope === 'Local') {
+      to = req.body.toLocal;
+    } else if(scope === 'International') {
+      to = req.body.toIntl;
+    }
+
+    var graph = new routeFinder(logData['cost'], logData['discontinue'], local);
+    //FORMAT: pathCost['path'] OR pathCost['cost']
+    var pathCost;
+    if (priority ==='Air') {
+      pathCost = graph.getPath(from, to, priority,weight,volume,true);
+    } else {
+      //FORMAT: noAir['path'] OR noAir['cost']
+      var noAir = graph.getPath(from, to, priority,weight,volume,false);
+      if (noAir['path'] !== null) {
+        pathCost = noAir;
+      } else {
+        var yesAir = graph.getPath(from, to, priority,weight,volume,true);
+        if (yesAir['path'] !== null) {
+          pathCost = noAir;
+        }
+      }
+    }
+
+    var feedback = [];
+    if (pathCost !== null) {
+      feedback.push(['Price is $'+tools.getPrice(logData['price'],from,to,scope+' '+priority,weight,volume)]);
+      feedback.push(['Path is '+pathCost['path']]);
+      feedback.push(['Cost is '+pathCost['cost']]);
+      feedback.push(['Tranport firms involed: '+pathCost['transport']]);
+      res.render('index/feedback', {
+        title: 'KPSmart - Edit Credentials',
+        username: req.session.user,
+        feedback: feedback
+      });
+    }
+
+  }
+});
+
 //GET: /test
 router.get('/test', function(req, res) {
     //test dijkstra algo
-    var graph = new routeFinderIntl(logData['price'], local);
-    var obj = graph.getPath('Wellington','Japan','International Air',5,5);
+    var graph = new routeFinder(logData['cost'], logData['discontinue'], local);
+    var obj = graph.getPath('Wellington','Japan','Air',5,5, true);
     console.log('RESULT '+obj['path']+' '+obj['cost']);
-    var calculator = new costCalculatorIntl(logData['cost'], obj['path'], logData['discontinue'], local);
-    var expense = calculator.getTransport('International Air',5,5);
-    console.log('EXPENSES '+tools.getCompany(expense['firms'])+' '+expense['expenses']);
+    // var calculator = new costCalculatorIntl(logData['cost'], obj['path'], logData['discontinue'], local);
+    //var expense = calculator.getTransport('International Air',5,5);
+    // console.log('EXPENSES '+tools.getCompany(expense['firms'])+' '+expense['expenses']);
 
+    //test write to log
+    // var xml = builder.buildObject(logData);
+    // console.log(xml);
     res.redirect('/');
 });
 

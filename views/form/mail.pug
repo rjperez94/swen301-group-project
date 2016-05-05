@@ -5,6 +5,42 @@ block content
   include ../shared/login_info.pug
   include ../shared/nav.pug
 
+  script.
+    function disable() {
+      var value = document.getElementById('scope').value;
+
+      if (value === 'Local') {
+        document.getElementById('toLocal').disabled=false;
+        document.getElementById('toLocal').style.visibility='visible';
+
+        document.getElementById('toIntl').disabled=true;
+        document.getElementById('toIntl').style.visibility='hidden';
+      } else if (value === 'International') {
+        document.getElementById('toIntl').disabled=false;
+        document.getElementById('toIntl').style.visibility='visible';
+
+        document.getElementById('toLocal').disabled=true;
+        document.getElementById('toLocal').style.visibility='hidden';
+      } else {
+        document.getElementById('toLocal').style.visibility='hidden';
+        document.getElementById('toIntl').style.visibility='hidden';
+
+        document.getElementById('toLocal').disabled=true;
+        document.getElementById('toIntl').disabled=true;
+      }
+    }
+    window.onload = disable;
+
+    function checkScope() {
+      var value = document.getElementById('scope').value;
+      if(value !== 'International' && value !== 'Local') {
+        alert('Select mail scope');
+        return false;
+      }
+
+      return true;
+    }
+
   form(action='/mail',method='post')
     fieldset
       strong Origin *
@@ -14,26 +50,23 @@ block content
       br
 
       strong Scope *
-      select(name= 'scope')
+      select(id='scope' name='scope' onchange='disable()')
+        option(value=null selected) #{'Please select scope'}
         each val in scope
           option(value=val) #{val}
-      br
-      br
 
-      strong Select one of:*
-        br
-        strong Local Destination
-        select(name= 'toLocal')
-          each val in localTo
-            option(value=val) #{val}
-        br
+      br
+      div(id='toLocal')
+        strong Local Destination*
+        select(name='toLocal')
+         each val in localTo
+           option(value=val) #{val}
 
-        strong International Destination
-        select(name= 'toIntl')
-          each val in intl
-            option(value=val) #{val}
-        br
-        br
+      div(id='toIntl')
+        strong International Destination*
+        select(name='toIntl')
+         each val in intl
+           option(value=val) #{val}
 
       strong Priority *
       select(name= 'priority')
@@ -62,4 +95,8 @@ block content
       p
         strong=  'Fields marked with * are required'
 
-      button Submit
+      input(
+        type='submit'
+        value='Submit'
+        onclick='return checkScope()'
+      )

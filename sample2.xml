@@ -293,7 +293,7 @@
   </mail>
   <price>
     <ID>29</ID>
-    <to>Sydney</to>
+    <to>Japan</to>
     <from>Wellington</from>
     <priority>International Air</priority>
     <weightcost>3</weightcost>
@@ -301,8 +301,8 @@
   </price>
   <price>
     <ID>30</ID>
-    <to>Japan</to>
-    <from>Sydney</from>
+    <to>Sydney</to>
+    <from>Wellington</from>
     <priority>International Air</priority>
     <weightcost>3</weightcost>
     <volumecost>3</volumecost>

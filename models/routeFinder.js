@@ -1,4 +1,5 @@
 const Graph = require('node-dijkstra');
+var tools = new (require('../models/tools.js'));
 
 function routeFinder(cost,discontinued,local) {
   //costs[#index][attr][0]
@@ -65,7 +66,7 @@ function routeFinder(cost,discontinued,local) {
   };
 
   this.getNeighbours = function (pri,wei,vol,includeAir) {
-    this.removeDiscontinued(this.costs, this.discontinued);
+    tools.removeDiscontinued(this.costs, this.discontinued);
 
     for (var i = this.costs.length - 1; i >= 0; i--) {
       var company = this.costs[i]['company'][0];
@@ -123,41 +124,6 @@ function routeFinder(cost,discontinued,local) {
       return true;
     }
     return false;
-  }
-
-  this.removeDiscontinued = function (cost,discontinued) {
-    var indexesToRemoveFromCost = [];
-
-    //find
-    for (var i = 0; i < discontinued.length; i++) {
-      var company = discontinued[i]['company'][0];
-      var type = discontinued[i]['type'][0];
-      var from = discontinued[i]['from'][0];
-      var to = discontinued[i]['to'][0];
-
-      for (var j = 0; j < cost.length; j++) {
-        var company2 = cost[j]['company'][0];
-        var type2 = cost[j]['type'][0];
-        var from2 = cost[j]['from'][0];
-        var to2 = cost[j]['to'][0];
-        if (company===company2 && type===type2 && from===from2 && to===to2) {
-          indexesToRemoveFromCost.push(j);
-        }
-      }
-    }
-    //console.log(indexesToRemoveFromCost);
-
-    //delete
-    for (var i = 0; i < indexesToRemoveFromCost.length; i++) {
-      var index = indexesToRemoveFromCost[i];
-      delete cost[index];
-    }
-    //remove nulls
-    for (var i = 0; i < indexesToRemoveFromCost.length; i++) {
-      var index = indexesToRemoveFromCost[i];
-      cost.splice(index,1);
-    }
-
   }
 
 }

@@ -1,0 +1,51 @@
+extends ../shared/layout.pug
+
+block content
+  h1= title
+  include ../shared/login_info.pug
+  include ../shared/nav.pug
+
+  script.
+    function checkFromTo() {
+      if(document.getElementById('origin').value === document.getElementById('dest').value) {
+        alert('Origin and destination cannot be the same');
+        return false;
+      }
+
+      return true;
+    }
+
+  form(action='/discontinue',method='post')
+    fieldset
+      strong Company *
+      select(name='company')
+        for val in company
+          option(value=val) #{val}
+      br
+
+      strong Origin *
+      select(id='origin' name='from')
+        for val in from
+          option(value=val) #{val}
+      br
+
+      strong Destination *
+      select(id='dest' name='to')
+        for val in to
+          option(value=val) #{val}
+      br
+
+      strong Type *
+      select(name='type')
+        for val in type
+          option(value=val) #{val}
+      br
+
+      p
+        strong=  'Fields marked with * are required'
+
+      input(
+        type='submit'
+        value='Submit'
+        onclick='return checkFromTo()'
+      )

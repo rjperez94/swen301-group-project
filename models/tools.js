@@ -85,16 +85,6 @@ function tools () {
     return evt[attr][0];
   }
 
-  //get Company name of Firms in Path
-  //FORMAT: logData[type][#index][attribute][0]
-  this.getCompany = function(firms) {
-    var result = [];
-    for (var i = 0; i < firms.length; i++) {
-      result.push(firms[i]['company']);
-    }
-    return result;
-  }
-
   //get all international cities
   //NOTE: 'New Zealand' IS included in local
   //FORMAT: prices[#index][attribute][0]
@@ -108,6 +98,44 @@ function tools () {
 
     }
     return result;
+  }
+
+  //remove cost updates that have an discontinued associated discontinue update
+  //NOTE: this will modify cost array so, you must give a copy only, not the original
+  this.removeDiscontinued = function (cost,discontinued) {
+    var indexesToRemoveFromCost = [];
+
+    //find
+    for (var i = 0; i < discontinued.length; i++) {
+      var id = discontinued[i]['ID'][0];
+      var company = discontinued[i]['company'][0];
+      var type = discontinued[i]['type'][0];
+      var from = discontinued[i]['from'][0];
+      var to = discontinued[i]['to'][0];
+
+      for (var j = 0; j < cost.length; j++) {
+        var id2 = cost[j]['ID'][0];
+        var company2 = cost[j]['company'][0];
+        var type2 = cost[j]['type'][0];
+        var from2 = cost[j]['from'][0];
+        var to2 = cost[j]['to'][0];
+        if (company===company2 && type===type2 && from===from2 && to===to2 && id>id2) {
+          indexesToRemoveFromCost.push(j);
+        }
+      }
+    }
+
+    //delete
+    for (var i = 0; i < indexesToRemoveFromCost.length; i++) {
+      var index = indexesToRemoveFromCost[i];
+      delete cost[index];
+    }
+    //remove nulls
+    for (var i = 0; i < indexesToRemoveFromCost.length; i++) {
+      var index = indexesToRemoveFromCost[i];
+      cost.splice(index,1);
+    }
+
   }
 
   //getPriceIntl - get price for International Mail
@@ -136,6 +164,7 @@ function tools () {
     return null;
   }
 
+  //log simulation data aka logData to location fileName e.g. sample.xml will write/overwrite sample.xml in root dir of site
   this.writeToLog = function(simulation, fileName) {
     var xml = builder.buildObject({simulation});
 
@@ -144,6 +173,20 @@ function tools () {
         return console.error(err);
       }
     });
+  }
+
+  //find cost update which has same company,from,to and type
+  //then return true
+  this.hasCostUpdate = function(costs, company,from, to,type) {
+    for (var i = costs.length-1; i >= 0 ; i--) {
+      if (costs[i]['company'][0] === company &&
+      costs[i]['from'][0] === from &&
+      costs[i]['to'][0] === to &&
+      costs[i]['type'][0] === type) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

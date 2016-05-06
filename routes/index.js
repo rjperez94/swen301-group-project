@@ -53,6 +53,10 @@ if(tools.getFileRealPath(logPath)) {
       }
       parseString(data.toString(), function (err, result) {
         logData = result['simulation'];
+        //getMaxID
+        currentMaxID = tools.getMaxID(logData,eventTypes);
+        //active prices
+        //NOTE: this only executes when no 'Active' attr has beem found in logData['price'] instances
         tools.setActivePrices(logData['price']);
         fs.close(fd, function(err){
           if (err){
@@ -67,9 +71,6 @@ if(tools.getFileRealPath(logPath)) {
 
 // GET: /
 router.get('/', function(req, res) {
-  //getMaxID
-  currentMaxID = tools.getMaxID(logData,eventTypes);
-
   if(!req.session.user) { //check for login
     res.render('index/index', {
       title: 'KPSmart - Restricted Access'
@@ -101,7 +102,7 @@ router.post('/login', function(req, res) {
       if (users.groups[i].pass === req.body.password) {
         req.session.user = req.body.username;
         req.session.save();
-        console.log(req.session);
+        //console.log(req.session);
         res.redirect('/main');
       } else {
         res.render('index/feedback', {
@@ -139,11 +140,10 @@ router.post('/signup', function(req, res) {
   var feedback = [];
 
   if (users) {
-    for (var i = 0; i <users.groups.length; i++) {
-      if (users.groups[i].user === role) {
-        feedback.push('Login for user group"'+role+'" already exist');
-        feedback.push('Nothing has been changed');
-      }
+    var i = tools.getIndex(users,role);
+    if (i >= 0) {
+      feedback.push('Login for user group"'+role+'" already exist');
+      feedback.push('Nothing has been changed');
     }
   } else if (pass !== rePass || !re.test(email)) {
     if (newPass !== newRePass) {
@@ -179,15 +179,15 @@ router.post('/signup', function(req, res) {
 router.get('/edit', function(req, res) {
   if(!req.session.user) { //check for login
     res.redirect('/');
+  } else {
+    var i = getIndex(req.session.user);
+    var email = users.groups[i].email;
+    res.render('form/edit', {
+      title: 'KPSmart - Edit Credentials',
+      username: req.session.user,
+      email: email
+    });
   }
-
-  var i = getIndex(req.session.user);
-  var email = users.groups[i].email;
-  res.render('form/edit', {
-    title: 'KPSmart - Edit Credentials',
-    username: req.session.user,
-    email: email
-  });
 });
 
 // POST: /edit_process
@@ -337,20 +337,88 @@ router.post('/mail', function(req, res) {
   }
 });
 
+//GET: /close-rt
+router.get('/close-rt', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    //make copy of costs
+    var costs = [];
+    for (var i = 0; i < logData['cost'].length; i++) {
+      costs.push(logData['cost'][i]);
+    }
+    tools.removeDiscontinued(costs,logData['discontinue']);
+
+    var company = [];
+    var to = [];
+    var from = [];
+    for (var i = 0; i < costs.length; i++) {
+      if(company.indexOf(costs[i]['company'][0]) < 0) {
+        company.push(costs[i]['company'][0]);
+      }
+      if(to.indexOf(costs[i]['to'][0]) < 0) {
+        to.push(costs[i]['to'][0]);
+      }
+      if(from.indexOf(costs[i]['from'][0]) < 0) {
+        from.push(costs[i]['from'][0]);
+      }
+    }
+
+    res.render('form/close-rt', {
+      title: 'KPSmart - Close Route',
+      username: req.session.user,
+      type: ['Land', 'Air', 'Sea'],
+      company: company,
+      to: to,
+      from: from
+    });
+  }
+
+});
+
+//GET: /discontinue
+router.post('/discontinue', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    var company = req.body.company;
+    var from = req.body.from;
+    var to = req.body.to;
+    var type = req.body.type;
+
+    //make copy of costs
+    var costs = [];
+    for (var i = 0; i < logData['cost'].length; i++) {
+      costs.push(logData['cost'][i]);
+    }
+    tools.removeDiscontinued(costs,logData['discontinue']);
+
+    if(tools.hasCostUpdate(costs, company,from, to,type) === true) {
+      logData['discontinue'].push({'ID':[currentMaxID+1], 'company':[company], 'to':[to], 'from':[from], 'type':type});
+      //write to log file
+      tools.writeToLog(logData,logPath);
+      res.render('index/feedback', {
+        title: 'KPSmart - Close Route',
+        username: req.session.user,
+        feedback: ['Route from '+from+' to '+to+' of '+company+' by '+type+' has now been discontinued']
+      });
+    } else {
+      res.render('index/feedback', {
+        title: 'KPSmart - Close Route',
+        username: req.session.user,
+        feedback: ['Route not available']
+      });
+    }
+  }
+});
+
 //GET: /test
 router.get('/test', function(req, res) {
-    //test dijkstra algo
-    // var graph = new routeFinder(logData['cost'], logData['discontinue'], local);
-    // var obj = graph.getPath('Wellington','Japan','Air',5,5, true);
-    // console.log('RESULT '+obj['path']+' '+obj['cost']);
-    // var calculator = new costCalculatorIntl(logData['cost'], obj['path'], logData['discontinue'], local);
-    //var expense = calculator.getTransport('International Air',5,5);
-    // console.log('EXPENSES '+tools.getCompany(expense['firms'])+' '+expense['expenses']);
-
-    //test write to log
-    var xml = builder.buildObject({'simulation':{logData}});
-    console.log(xml);
-    res.redirect('/');
+  //NOTE: Test code here, click Test link in index.pug
+  //test write to log
+  var xml = builder.buildObject({'simulation':{logData}});
+  console.log(xml);
+  res.redirect('/');
 });
 
 module.exports = router;

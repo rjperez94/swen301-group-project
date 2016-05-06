@@ -124,7 +124,6 @@ router.post('/login', function(req, res) {
 // GET: /logout
 router.get('/logout', function(req, res) {
   req.session.destroy();
-  //console.log(req.session);
   res.redirect('/');
 });
 
@@ -234,9 +233,9 @@ router.post('/edit_process', function(req, res) {
       }
 
       fs.writeFile('users.json', text,  function(err) {
-         if (err) {
-             return console.error(err);
-         }
+        if (err) {
+          return console.error(err);
+        }
       });
     }
 
@@ -244,6 +243,26 @@ router.post('/edit_process', function(req, res) {
       title: 'KPSmart - Edit Credentials',
       username: req.session.user,
       feedback: feedback
+    });
+  }
+});
+
+// GET: /edit login information
+router.get('/cost-list', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    //make copy of costs
+    var costs = [];
+    for (var i = 0; i < logData['cost'].length; i++) {
+      costs.push(logData['cost'][i]);
+    }
+    tools.removeDiscontinued(costs,logData['discontinue']);
+    res.render('index/costs', {
+      title: 'KPSmart - Cost List',
+      username: req.session.user,
+      costs: costs,
+      headings: ['ID','company','to','from','type','weightcost','volumecost','maxWeight','maxVolume','duration','frequency','day']
     });
   }
 });
@@ -339,6 +358,7 @@ router.post('/mail', function(req, res) {
 
 //GET: /close-rt
 router.get('/close-rt', function(req, res) {
+  //console.log(req.headers.referer.split('/'));
   if(!req.session.user) { //check for login
     res.redirect('/');
   } else {
@@ -364,13 +384,18 @@ router.get('/close-rt', function(req, res) {
       }
     }
 
+    var instance = null;
+    if (req.query.ID) {
+      instance = tools.getEvent(costs,req.query.ID);
+    }
     res.render('form/close-rt', {
       title: 'KPSmart - Close Route',
       username: req.session.user,
       type: ['Land', 'Air', 'Sea'],
       company: company,
       to: to,
-      from: from
+      from: from,
+      instance: instance
     });
   }
 

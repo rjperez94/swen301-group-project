@@ -66,13 +66,25 @@ function tools () {
 
   //get Event in logData
   //FORMAT: logData[type][#index][attribute][0]
-  this.getEvent = function(eventTypes,uID) {
+  this.getEvent = function(logData,eventTypes,uID) {
     for (var i = 0; i < eventTypes.length; i++) {
       var type = eventTypes[i];
       for (var j = 0; j < logData[type].length; j++) {
-        if (logData[type][j]['ID'][0] === uID.toString()) {
+        if (logData[type][j]['ID'][0] === uID) {
           return logData[type][j];
         }
+      }
+    }
+
+    return null;
+  }
+
+  //getEvent in a particular set of events 'array'
+  //FORMAT: array[#index][attribute][0]
+  this.getEvent = function(array,uID) {
+    for (var j = 0; j < array.length; j++) {
+      if (array[j]['ID'][0] === uID) {
+        return array[j];
       }
     }
 
@@ -142,7 +154,7 @@ function tools () {
   //FORMAT: prices[#index][attribute][0]
   this.getPriceIntl = function(prices,from,to,scopePriority,weight,volume) {
     for (var i = prices.length -1; i >= 0; i--) {
-      if (prices[i]['from'][0] === from &&
+      if ( (prices[i]['from'][0] === from || prices[i]['from'][0] === 'New Zealand') &&
       prices[i]['to'][0] === to &&
       prices[i]['priority'][0] === scopePriority) {
         return weight*prices[i]['weightcost'][0]+volume*prices[i]['volumecost'][0];

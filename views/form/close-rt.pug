@@ -20,26 +20,41 @@ block content
       strong Company *
       select(name='company')
         for val in company
-          option(value=val) #{val}
+          if (instance === null || instance.company[0] !== val)
+            option(value=val) #{val}
+          else
+            option(value=val selected) #{val}
       br
 
       strong Origin *
       select(id='origin' name='from')
         for val in from
-          option(value=val) #{val}
+          if (instance === null || instance.from[0] !== val)
+            option(value=val) #{val}
+          else
+            option(value=val selected) #{val}
       br
 
       strong Destination *
       select(id='dest' name='to')
         for val in to
-          option(value=val) #{val}
+          if (instance === null || instance.to[0] !== val)
+            option(value=val) #{val}
+          else
+            option(value=val selected) #{val}
       br
 
       strong Type *
       select(name='type')
         for val in type
-          option(value=val) #{val}
+          if (instance === null || instance.type[0] !== val)
+            option(value=val) #{val}
+          else
+            option(value=val selected) #{val}
       br
+
+      if (instance !== null)
+        p= 'This form has been pre-filled. You may choose to change these values'
 
       p
         strong=  'Fields marked with * are required'

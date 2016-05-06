@@ -41,10 +41,12 @@ function routeFinder(cost,discontinued,local) {
   this.getTransport = function(path) {
     var result = [];
     for (var i = 1; i < path.length; i++) {
+      var abort = false;
       var instance = this.neigh[path[i-1]];
-      for (var j = 0; j < instance.length; j++) {
+      for (var j = 0; j < instance.length && abort === false; j++) {
         if (instance[j][1] === path[i]) {
           result.push(instance[j][3]+' by '+instance[j][4]);
+          abort = true;
         }
       }
     }

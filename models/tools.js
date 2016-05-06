@@ -1,4 +1,6 @@
 var fs = require('fs');
+var xml2js = require('xml2js');
+var builder = new xml2js.Builder();
 
 function tools () {
   //check if file exist
@@ -108,18 +110,40 @@ function tools () {
     return result;
   }
 
-  //getPrice
+  //getPriceIntl - get price for International Mail
   //FORMAT: prices[#index][attribute][0]
-  this.getPrice = function(prices,from,to,scopePriority,weight,volume) {
-    console.log(scopePriority);
+  this.getPriceIntl = function(prices,from,to,scopePriority,weight,volume) {
     for (var i = prices.length -1; i >= 0; i--) {
-      if (prices[i]['from'] === from &&
-      prices[i]['to'] === to &&
-      prices[i]['priority'] === scopePriority) {
-        return weight*prices[i]['weightcost']+volume*prices[i]['volumecost'];
+      if (prices[i]['from'][0] === from &&
+      prices[i]['to'][0] === to &&
+      prices[i]['priority'][0] === scopePriority) {
+        return weight*prices[i]['weightcost'][0]+volume*prices[i]['volumecost'][0];
       }
     }
     return null;
+  }
+
+  //getPriceLoc - get Price for Local Mail
+  //FORMAT: prices[#index][attribute][0]
+  this.getPriceLoc = function(prices, scopePriority, weight, volume) {
+    for (var i = prices.length -1; i >= 0; i--) {
+      if (prices[i]['from'][0] === 'New Zealand' &&
+      prices[i]['to'][0] === 'New Zealand' &&
+      prices[i]['priority'][0] === scopePriority) {
+        return weight*prices[i]['weightcost'][0]+volume*prices[i]['volumecost'][0];
+      }
+    }
+    return null;
+  }
+
+  this.writeToLog = function(simulation, fileName) {
+    var xml = builder.buildObject({simulation});
+
+    fs.writeFile(fileName, xml,  function(err) {
+      if (err) {
+        return console.error(err);
+      }
+    });
   }
 
 }

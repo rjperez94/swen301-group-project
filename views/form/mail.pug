@@ -36,6 +36,9 @@ block content
       if(value !== 'International' && value !== 'Local') {
         alert('Select mail scope');
         return false;
+      } else if(value === 'Local' && document.getElementById('origin').value === document.getElementById('locDropDown').value) {
+        alert('Origin and destination cannot be the same');
+        return false;
       }
 
       return true;
@@ -44,7 +47,7 @@ block content
   form(action='/mail',method='post')
     fieldset
       strong Origin *
-      select(name='from')
+      select(id='origin' name='from')
         for val in localTo
           option(value=val) #{val}
       br
@@ -58,7 +61,7 @@ block content
       br
       div(id='toLocal')
         strong Local Destination*
-        select(name='toLocal')
+        select(id='locDropDown' name='toLocal')
          each val in localTo
            option(value=val) #{val}
 

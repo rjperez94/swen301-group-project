@@ -7,7 +7,6 @@ var fs = require('fs');
 var router = express.Router();
 
 var routeFinder = require('../models/routeFinder.js');
-var costCalculatorIntl = require('../models/costCalculator.js');
 var tools = new (require('../models/tools.js'));
 
 var userPath = 'users.json';
@@ -15,6 +14,7 @@ var logPath = 'sample2.xml';
 var currentMaxID = 0;
 var eventTypes = ['cost','price','mail','timelimit','discontinue'];
 var local = ['Auckland', 'Hamilton', 'Rotorua', 'Palmerston North', 'Wellington', 'Christchurch', 'Dunedin'];
+var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
 
 var users;
 var logData;
@@ -284,6 +284,7 @@ router.post('/mail', function(req, res) {
     var to;
 
     if(scope === 'Local') {
+      scope = 'Domestic';
       to = req.body.toLocal;
     } else if(scope === 'International') {
       to = req.body.toIntl;
@@ -297,26 +298,39 @@ router.post('/mail', function(req, res) {
     } else {
       //FORMAT: noAir['path'] OR noAir['cost']
       var noAir = graph.getPath(from, to, priority,weight,volume,false);
-      if (noAir['path'] !== null) {
+      if (noAir !== null) {
         pathCost = noAir;
       } else {
         var yesAir = graph.getPath(from, to, priority,weight,volume,true);
-        if (yesAir['path'] !== null) {
-          pathCost = noAir;
-        }
+        pathCost = yesAir;
       }
     }
 
-    var feedback = [];
     if (pathCost !== null) {
-      feedback.push(['Price is $'+tools.getPrice(logData['price'],from,to,scope+' '+priority,weight,volume)]);
+      var dayIndex = new Date().getDay();
+      logData['mail'].push({'ID':[currentMaxID+1], 'day':days[dayIndex], 'to':[to], 'from':[from], 'weight':[weight], 'volume': [volume], 'priority': [scope+' '+priority]});
+      //write to log file
+      tools.writeToLog(logData,logPath);
+
+      var feedback = [];
+      if (scope === 'International') {
+        feedback.push(['Price is $'+tools.getPriceIntl(logData['price'],from,to,scope+' '+priority,weight,volume)]);
+      } else if(scope === 'Domestic') {
+        feedback.push(['Price is $'+tools.getPriceLoc(logData['price'],scope+' '+priority,weight,volume)]);
+      }
       feedback.push(['Path is '+pathCost['path']]);
-      feedback.push(['Cost is '+pathCost['cost']]);
-      feedback.push(['Tranport firms involed: '+pathCost['transport']]);
+      feedback.push(['Cost is $'+pathCost['cost']]);
+      feedback.push(['Tranport firms involved: '+pathCost['transport']]);
       res.render('index/feedback', {
-        title: 'KPSmart - Edit Credentials',
+        title: 'KPSmart - Mail Delivery',
         username: req.session.user,
         feedback: feedback
+      });
+    } else {
+      res.render('index/feedback', {
+        title: 'KPSmart - Mail Delivery',
+        username: req.session.user,
+        feedback: ['Route not available']
       });
     }
 
@@ -326,16 +340,16 @@ router.post('/mail', function(req, res) {
 //GET: /test
 router.get('/test', function(req, res) {
     //test dijkstra algo
-    var graph = new routeFinder(logData['cost'], logData['discontinue'], local);
-    var obj = graph.getPath('Wellington','Japan','Air',5,5, true);
-    console.log('RESULT '+obj['path']+' '+obj['cost']);
+    // var graph = new routeFinder(logData['cost'], logData['discontinue'], local);
+    // var obj = graph.getPath('Wellington','Japan','Air',5,5, true);
+    // console.log('RESULT '+obj['path']+' '+obj['cost']);
     // var calculator = new costCalculatorIntl(logData['cost'], obj['path'], logData['discontinue'], local);
     //var expense = calculator.getTransport('International Air',5,5);
     // console.log('EXPENSES '+tools.getCompany(expense['firms'])+' '+expense['expenses']);
 
     //test write to log
-    // var xml = builder.buildObject(logData);
-    // console.log(xml);
+    var xml = builder.buildObject({'simulation':{logData}});
+    console.log(xml);
     res.redirect('/');
 });
 

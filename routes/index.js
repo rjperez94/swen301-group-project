@@ -247,7 +247,7 @@ router.post('/edit_process', function(req, res) {
   }
 });
 
-// GET: /edit login information
+// GET: /cost updates list
 router.get('/cost-list', function(req, res) {
   if(!req.session.user) { //check for login
     res.redirect('/');
@@ -263,6 +263,20 @@ router.get('/cost-list', function(req, res) {
       username: req.session.user,
       costs: costs,
       headings: ['ID','company','to','from','type','weightcost','volumecost','maxWeight','maxVolume','duration','frequency','day']
+    });
+  }
+});
+
+// GET: /price updates list
+router.get('/price-list', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    res.render('index/prices', {
+      title: 'KPSmart - Price List',
+      username: req.session.user,
+      prices: logData['price'],
+      headings: ['ID','to','from','priority','weightcost','volumecost','in-use']
     });
   }
 });
@@ -283,7 +297,7 @@ router.get('/deliver', function(req, res) {
       title: 'KPSmart - Mail Delivery',
       username: req.session.user,
       priority: ['Standard', 'Air'],
-      scope: ['Local','International'],
+      scope: ['Domestic','International'],
       localTo: local,
       intl: internationalCities
     });
@@ -358,7 +372,6 @@ router.post('/mail', function(req, res) {
 
 //GET: /close-rt
 router.get('/close-rt', function(req, res) {
-  //console.log(req.headers.referer.split('/'));
   if(!req.session.user) { //check for login
     res.redirect('/');
   } else {
@@ -401,7 +414,7 @@ router.get('/close-rt', function(req, res) {
 
 });
 
-//GET: /discontinue
+//POST: /discontinue
 router.post('/discontinue', function(req, res) {
   if(!req.session.user) { //check for login
     res.redirect('/');
@@ -435,6 +448,33 @@ router.post('/discontinue', function(req, res) {
       });
     }
   }
+});
+
+//GET: /price-up
+router.get('/price-up', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    var from = [];
+    for (var i = 0; i < local.length; i++) {
+      from.push(local[i]);
+    }
+    from.push('New Zealand');
+
+    var instance = null;
+    if (req.query.ID) {
+      instance = tools.getEvent(logData['price'],req.query.ID);
+    }
+    res.render('form/price-up', {
+      title: 'KPSmart - Price Update',
+      username: req.session.user,
+      priority: ['Standard', 'Air'],
+      scope: ['Domestic', 'International'],
+      from: from,
+      instance: instance
+    });
+  }
+
 });
 
 //GET: /test

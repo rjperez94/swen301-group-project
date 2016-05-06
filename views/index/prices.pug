@@ -1,0 +1,20 @@
+extends ../shared/layout.pug
+
+block content
+  h1= title
+  include ../shared/login_info.pug
+  include ../shared/nav.pug
+
+  table
+    tr
+      for val in headings
+        th= val
+      th= 'Update'
+
+    for instance in prices
+      tr
+      for val in instance
+        for i in val
+          td= i
+      td
+        a(href='price-up?ID='+instance.ID) price update pre-fill

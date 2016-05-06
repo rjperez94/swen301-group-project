@@ -9,7 +9,7 @@ block content
     function disable() {
       var value = document.getElementById('scope').value;
 
-      if (value === 'Local') {
+      if (value === 'Domestic') {
         document.getElementById('toLocal').disabled=false;
         document.getElementById('toLocal').style.visibility='visible';
 
@@ -21,12 +21,6 @@ block content
 
         document.getElementById('toLocal').disabled=true;
         document.getElementById('toLocal').style.visibility='hidden';
-      } else {
-        document.getElementById('toLocal').style.visibility='hidden';
-        document.getElementById('toIntl').style.visibility='hidden';
-
-        document.getElementById('toLocal').disabled=true;
-        document.getElementById('toIntl').disabled=true;
       }
     }
     window.onload = disable;
@@ -54,26 +48,26 @@ block content
 
       strong Scope *
       select(id='scope' name='scope' onchange='disable()')
-        option(value=null selected) #{'Please select scope'}
-        each val in scope
+        //option(value=null selected) #{'Please select scope'}
+        for val in scope
           option(value=val) #{val}
 
       br
       div(id='toLocal')
         strong Local Destination*
         select(id='locDropDown' name='toLocal')
-         each val in localTo
+         for val in localTo
            option(value=val) #{val}
 
       div(id='toIntl')
         strong International Destination*
         select(name='toIntl')
-         each val in intl
+         for val in intl
            option(value=val) #{val}
 
       strong Priority *
       select(name= 'priority')
-        each val in priority
+        for val in priority
           option(value=val) #{val}
       br
 

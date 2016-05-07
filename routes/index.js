@@ -180,7 +180,7 @@ router.get('/edit', function(req, res) {
   if(!req.session.user) { //check for login
     res.redirect('/');
   } else {
-    var i = getIndex(req.session.user);
+    var i = tools.getIndex(users, req.session.user);
     var email = users.groups[i].email;
     res.render('form/edit', {
       title: 'KPSmart - Edit Credentials',

@@ -316,8 +316,7 @@ router.post('/mail', function(req, res) {
     var weight = req.body.weight;
     var to;
 
-    if(scope === 'Local') {
-      scope = 'Domestic';
+    if(scope === 'Domestic') {
       to = req.body.toLocal;
     } else if(scope === 'International') {
       to = req.body.toIntl;
@@ -472,6 +471,78 @@ router.get('/price-up', function(req, res) {
       scope: ['Domestic', 'International'],
       froms: from,
       instance: instance
+    });
+  }
+
+});
+
+//POST: /price_process
+router.post('/price_process', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    var from = req.body.from;
+    var to = req.body.to;
+    var scope = req.body.scope;
+    var priority = req.body.priority;
+    var volumecost = req.body.volumecost;
+    var weightcost = req.body.weightcost;
+
+    if(scope === 'Domestic') {
+      logData['price'].push({'ID':[currentMaxID+1], 'to':['New Zealand'], 'from':['New Zealand'], 'priority': ['Domestic '+priority], 'weightcost':[weightcost], 'volumecost':[volumecost], 'active':['Yes']});
+    } else {
+      logData['price'].push({'ID':[currentMaxID+1], 'to':[to], 'from':[from], 'priority': [scope+' '+priority], 'weightcost':[weightcost], 'volumecost':[volumecost], 'active':['Yes']});
+    }
+
+    var matchID = tools.setToInactive(logData['price'], logData['price'][ logData['price'].length-1 ]);
+    //write to log file
+    tools.writeToLog(logData,logPath);
+
+    var feedback = [['Price update successful']];
+    if(matchID !== null) {
+      feedback.push(['Price update with ID '+matchID+' has been replaced by this and is now inactive']);
+    }
+    res.render('index/feedback', {
+      title: 'KPSmart - Price Update',
+      username: req.session.user,
+      feedback: feedback
+    });
+  }
+
+});
+
+//GET: /price-up
+router.get('/price-deactivate', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    var feedback = [];
+    var instance = null;
+    if (req.query.ID) {
+      instance = tools.getEvent(logData['price'],req.query.ID);
+      if(instance !== null) {
+        if(instance['active'][0] === 'Yes') {
+          instance['active'][0] = 'No';
+          //write to log file
+          tools.writeToLog(logData,logPath);
+
+          feedback.push(['Price update with ID '+instance['ID'][0]+' has been deactivated and is now inactive']);
+          feedback.push(['This price deactivation will be logged. But it will NOT create a new price update event']);
+        } else {
+          feedback.push(['Price update not in use']);
+          feedback.push(['Nothing has changed']);
+        }
+      } else {
+        feedback.push(['Event with ID is not a price update']);
+      }
+    } else {
+      feedback.push(['No event selected']);
+    }
+
+    res.render('index/feedback', {
+      title: 'KPSmart - Price Deactivate',
+      username: req.session.user,
+      feedback: feedback
     });
   }
 

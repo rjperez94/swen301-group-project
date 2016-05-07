@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <simulation>
   <cost>
     <ID>1</ID>
@@ -126,6 +126,48 @@
     <frequency>168</frequency>
     <day>Monday</day>
   </cost>
+  <cost>
+    <ID>22</ID>
+    <company>Qantas</company>
+    <to>Sydney</to>
+    <from>Wellington</from>
+    <type>Air</type>
+    <weightcost>2</weightcost>
+    <volumecost>1</volumecost>
+    <maxWeight>120</maxWeight>
+    <maxVolume>150</maxVolume>
+    <duration>3</duration>
+    <frequency>12</frequency>
+    <day>Monday</day>
+  </cost>
+  <cost>
+    <ID>31</ID>
+    <company>Air NZ</company>
+    <to>Japan</to>
+    <from>Sydney</from>
+    <type>Air</type>
+    <weightcost>6</weightcost>
+    <volumecost>6</volumecost>
+    <maxWeight>350</maxWeight>
+    <maxVolume>50</maxVolume>
+    <duration>16</duration>
+    <frequency>36</frequency>
+    <day>Thursday</day>
+  </cost>
+  <cost>
+    <ID>32</ID>
+    <company>Air NZ</company>
+    <to>Sydney</to>
+    <from>Wellington</from>
+    <type>Air</type>
+    <weightcost>6</weightcost>
+    <volumecost>6</volumecost>
+    <maxWeight>350</maxWeight>
+    <maxVolume>50</maxVolume>
+    <duration>16</duration>
+    <frequency>36</frequency>
+    <day>Thursday</day>
+  </cost>
   <price>
     <ID>10</ID>
     <to>Rome</to>
@@ -133,6 +175,7 @@
     <priority>International Air</priority>
     <weightcost>6</weightcost>
     <volumecost>8</volumecost>
+    <active>Yes</active>
   </price>
   <price>
     <ID>11</ID>
@@ -141,6 +184,7 @@
     <priority>International Air</priority>
     <weightcost>3</weightcost>
     <volumecost>2</volumecost>
+    <active>No</active>
   </price>
   <price>
     <ID>12</ID>
@@ -149,6 +193,7 @@
     <priority>International Air</priority>
     <weightcost>4</weightcost>
     <volumecost>4</volumecost>
+    <active>Yes</active>
   </price>
   <price>
     <ID>13</ID>
@@ -157,6 +202,7 @@
     <priority>International Standard</priority>
     <weightcost>3</weightcost>
     <volumecost>2</volumecost>
+    <active>Yes</active>
   </price>
   <price>
     <ID>14</ID>
@@ -165,6 +211,7 @@
     <priority>Domestic Standard</priority>
     <weightcost>1</weightcost>
     <volumecost>1</volumecost>
+    <active>Yes</active>
   </price>
   <price>
     <ID>15</ID>
@@ -173,6 +220,43 @@
     <priority>Domestic Air</priority>
     <weightcost>1</weightcost>
     <volumecost>2</volumecost>
+    <active>Yes</active>
+  </price>
+  <price>
+    <ID>23</ID>
+    <to>Sydney</to>
+    <from>New Zealand</from>
+    <priority>International Air</priority>
+    <weightcost>3</weightcost>
+    <volumecost>3</volumecost>
+    <active>Yes</active>
+  </price>
+  <price>
+    <ID>29</ID>
+    <to>Japan</to>
+    <from>Wellington</from>
+    <priority>International Air</priority>
+    <weightcost>3</weightcost>
+    <volumecost>3</volumecost>
+    <active>Yes</active>
+  </price>
+  <price>
+    <ID>30</ID>
+    <to>Sydney</to>
+    <from>Wellington</from>
+    <priority>International Air</priority>
+    <weightcost>3</weightcost>
+    <volumecost>3</volumecost>
+    <active>No</active>
+  </price>
+  <price>
+    <ID>33</ID>
+    <to>Sydney</to>
+    <from>Wellington</from>
+    <priority>International Air</priority>
+    <weightcost>4</weightcost>
+    <volumecost>6</volumecost>
+    <active>Yes</active>
   </price>
   <mail>
     <ID>16</ID>
@@ -201,13 +285,6 @@
     <volume>5</volume>
     <priority>International Air</priority>
   </mail>
-  <timelimit>
-    <ID>19</ID>
-    <to>Wellington</to>
-    <from>Rome</from>
-    <priority>International Air</priority>
-    <maxDeliveryTime>4</maxDeliveryTime>
-  </timelimit>
   <mail>
     <ID>20</ID>
     <day>Thursday</day>
@@ -217,35 +294,6 @@
     <volume>120</volume>
     <priority>International Standard</priority>
   </mail>
-  <discontinue>
-    <ID>21</ID>
-    <company>Kelburn Airways</company>
-    <to>Sydney</to>
-    <from>Wellington</from>
-    <type>Air</type>
-  </discontinue>
-  <cost>
-    <ID>22</ID>
-    <company>Qantas</company>
-    <to>Sydney</to>
-    <from>Wellington</from>
-    <type>Air</type>
-    <weightcost>2</weightcost>
-    <volumecost>1</volumecost>
-    <maxWeight>120</maxWeight>
-    <maxVolume>150</maxVolume>
-    <duration>3</duration>
-    <frequency>12</frequency>
-    <day>Monday</day>
-  </cost>
-  <price>
-    <ID>23</ID>
-    <to>Sydney</to>
-    <from>New Zealand</from>
-    <priority>International Air</priority>
-    <weightcost>3</weightcost>
-    <volumecost>3</volumecost>
-  </price>
   <mail>
     <ID>24</ID>
     <day>Thursday</day>
@@ -291,48 +339,18 @@
     <volume>5</volume>
     <priority>International Air</priority>
   </mail>
-  <price>
-    <ID>29</ID>
-    <to>Japan</to>
-    <from>Wellington</from>
+  <timelimit>
+    <ID>19</ID>
+    <to>Wellington</to>
+    <from>Rome</from>
     <priority>International Air</priority>
-    <weightcost>3</weightcost>
-    <volumecost>3</volumecost>
-  </price>
-  <price>
-    <ID>30</ID>
-    <to>Sydney</to>
-    <from>Wellington</from>
-    <priority>International Air</priority>
-    <weightcost>3</weightcost>
-    <volumecost>3</volumecost>
-  </price>
-  <cost>
-    <ID>31</ID>
-    <company>Air NZ</company>
-    <to>Japan</to>
-    <from>Sydney</from>
-    <type>Air</type>
-    <weightcost>6</weightcost>
-    <volumecost>6</volumecost>
-    <maxWeight>350</maxWeight>
-    <maxVolume>50</maxVolume>
-    <duration>16</duration>
-    <frequency>36</frequency>
-    <day>Thursday</day>
-  </cost>
-  <cost>
-    <ID>32</ID>
-    <company>Air NZ</company>
+    <maxDeliveryTime>4</maxDeliveryTime>
+  </timelimit>
+  <discontinue>
+    <ID>21</ID>
+    <company>Kelburn Airways</company>
     <to>Sydney</to>
     <from>Wellington</from>
     <type>Air</type>
-    <weightcost>6</weightcost>
-    <volumecost>6</volumecost>
-    <maxWeight>350</maxWeight>
-    <maxVolume>50</maxVolume>
-    <duration>16</duration>
-    <frequency>36</frequency>
-    <day>Thursday</day>
-  </cost>
+  </discontinue>
 </simulation>

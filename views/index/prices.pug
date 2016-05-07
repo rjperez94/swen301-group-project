@@ -10,6 +10,7 @@ block content
       for val in headings
         th= val
       th= 'Update'
+      th= 'Deactivate'
 
     for instance in prices
       tr
@@ -18,3 +19,5 @@ block content
           td= i
       td
         a(href='price-up?ID='+instance.ID) price update pre-fill
+      td
+        a(href='price-deactivate?ID='+instance.ID) price deactivate

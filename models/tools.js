@@ -187,8 +187,8 @@ function tools () {
     });
   }
 
-  //find cost update which has same company,from,to and type
-  //then return true
+  //find cost update which has same company,from,to and type, then return true
+  //NOTE: this searches bottom-up
   this.hasCostUpdate = function(costs, company,from, to,type) {
     for (var i = costs.length-1; i >= 0 ; i--) {
       if (costs[i]['company'][0] === company &&
@@ -199,6 +199,22 @@ function tools () {
       }
     }
     return false;
+  }
+
+  //sets a price instance in the prices array to inactive if it matches the priceUpdate
+  //NOTE: this searches bottom-up
+  //NOTE: loop starts at prices.length-2 to skip the newly added price update
+  this.setToInactive = function(prices, priceUpdate) {
+    for (var i = prices.length-2; i >= 0; i--) {
+      if (prices[i]['to'][0] === priceUpdate['to'][0] &&
+      prices[i]['from'][0] === priceUpdate['from'][0] &&
+      prices[i]['priority'][0] === priceUpdate['priority'][0]) {
+        prices[i]['active'][0] = 'No';
+        return prices[i]['ID'][0];
+      }
+    }
+    //no previous matching price update
+    return null;
   }
 
 }

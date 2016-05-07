@@ -15,6 +15,7 @@ var currentMaxID = 0;
 var eventTypes = ['cost','price','mail','timelimit','discontinue'];
 var local = ['Auckland', 'Hamilton', 'Rotorua', 'Palmerston North', 'Wellington', 'Christchurch', 'Dunedin'];
 var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+var transportTypes = ['Land', 'Air', 'Sea'];
 
 var users;
 var logData;
@@ -340,7 +341,15 @@ router.post('/mail', function(req, res) {
 
     if (pathCost !== null) {
       var dayIndex = new Date().getDay();
-      logData['mail'].push({'ID':[currentMaxID+1], 'day':days[dayIndex], 'to':[to], 'from':[from], 'weight':[weight], 'volume': [volume], 'priority': [scope+' '+priority]});
+      logData['mail'].push({
+        'ID':[currentMaxID+1],
+        'day':days[dayIndex],
+        'to':[to],
+        'from':[from],
+        'weight':[weight],
+        'volume': [volume],
+        'priority': [scope+' '+priority]
+      });
       //write to log file
       tools.writeToLog(logData,logPath);
 
@@ -403,7 +412,7 @@ router.get('/close-rt', function(req, res) {
     res.render('form/close-rt', {
       title: 'KPSmart - Close Route',
       username: req.session.user,
-      type: ['Land', 'Air', 'Sea'],
+      type: transportTypes,
       company: company,
       to: to,
       from: from,
@@ -431,7 +440,13 @@ router.post('/discontinue', function(req, res) {
     tools.removeDiscontinued(costs,logData['discontinue']);
 
     if(tools.hasCostUpdate(costs, company,from, to,type) === true) {
-      logData['discontinue'].push({'ID':[currentMaxID+1], 'company':[company], 'to':[to], 'from':[from], 'type':type});
+      logData['discontinue'].push({
+        'ID':[currentMaxID+1],
+        'company':[company],
+        'to':[to],
+        'from':[from],
+        'type':type
+      });
       //write to log file
       tools.writeToLog(logData,logPath);
       res.render('index/feedback', {
@@ -489,9 +504,25 @@ router.post('/price_process', function(req, res) {
     var weightcost = req.body.weightcost;
 
     if(scope === 'Domestic') {
-      logData['price'].push({'ID':[currentMaxID+1], 'to':['New Zealand'], 'from':['New Zealand'], 'priority': ['Domestic '+priority], 'weightcost':[weightcost], 'volumecost':[volumecost], 'active':['Yes']});
+      logData['price'].push({
+        'ID':[currentMaxID+1],
+        'to':['New Zealand'],
+        'from':['New Zealand'],
+        'priority': ['Domestic '+priority],
+        'weightcost':[weightcost],
+        'volumecost':[volumecost],
+        'active':['Yes']
+      });
     } else {
-      logData['price'].push({'ID':[currentMaxID+1], 'to':[to], 'from':[from], 'priority': [scope+' '+priority], 'weightcost':[weightcost], 'volumecost':[volumecost], 'active':['Yes']});
+      logData['price'].push({
+        'ID':[currentMaxID+1],
+        'to':[to],
+        'from':[from],
+        'priority': [scope+' '+priority],
+        'weightcost':[weightcost],
+        'volumecost':[volumecost],
+        'active':['Yes']
+      });
     }
 
     var matchID = tools.setToInactive(logData['price'], logData['price'][ logData['price'].length-1 ]);
@@ -511,7 +542,7 @@ router.post('/price_process', function(req, res) {
 
 });
 
-//GET: /price-up
+//GET: /price-deactivate
 router.get('/price-deactivate', function(req, res) {
   if(!req.session.user) { //check for login
     res.redirect('/');
@@ -543,6 +574,68 @@ router.get('/price-deactivate', function(req, res) {
       title: 'KPSmart - Price Deactivate',
       username: req.session.user,
       feedback: feedback
+    });
+  }
+
+});
+
+//GET: /cost-up
+router.get('/cost-up', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    var instance = null;
+    if (req.query.ID) {
+      instance = tools.getEvent(logData['cost'],req.query.ID);
+    }
+    res.render('form/cost-up', {
+      title: 'KPSmart - Cost Update',
+      username: req.session.user,
+      type: transportTypes,
+      days: days,
+      instance: instance
+    });
+  }
+
+});
+
+//POST: /cost_process
+router.post('/cost_process', function(req, res) {
+  if(!req.session.user) { //check for login
+    res.redirect('/');
+  } else {
+    var company = req.body.company;
+    var to = req.body.to;
+    var from = req.body.from;
+    var type = req.body.type;
+    var weightcost = req.body.weightcost;
+    var volumecost = req.body.volumecost;
+    var maxWeight = req.body.maxWeight;
+    var maxVolume = req.body.maxVolume;
+    var duration = req.body.duration;
+    var frequency = req.body.frequency;
+    var day = req.body.day;
+
+    logData['cost'].push({
+      'ID':[currentMaxID+1],
+      'company':[company],
+      'to':[to],
+      'from':[from],
+      'type': [type],
+      'weightcost':[weightcost],
+      'volumecost':[volumecost],
+      'maxWeight':[maxWeight],
+      'maxVolume':[maxVolume],
+      'duration':[duration],
+      'frequency':[frequency],
+      'day':[day]
+    });
+    //write to log file
+    tools.writeToLog(logData,logPath);
+    res.render('index/feedback', {
+      title: 'KPSmart - Cost Update',
+      username: req.session.user,
+      feedback: ['Route from '+from+' to '+to+' of '+company+' by '+type+' has been updated/created']
     });
   }
 

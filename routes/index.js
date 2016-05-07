@@ -470,7 +470,7 @@ router.get('/price-up', function(req, res) {
       username: req.session.user,
       priority: ['Standard', 'Air'],
       scope: ['Domestic', 'International'],
-      from: from,
+      froms: from,
       instance: instance
     });
   }

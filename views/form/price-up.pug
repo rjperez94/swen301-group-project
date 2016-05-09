@@ -85,16 +85,16 @@ block content
 
       strong Volume Cost *
       if (instance === null)
-        input(type='number' min='1' name='volumecost' placeholder='cost per cubic centimetre' required)
+        input(type='number' step='0.01' min='1' name='volumecost' placeholder='cost per cubic centimetre' required)
       else
-        input(type='number' min='1' name='volumecost' value=instance.volumecost[0] placeholder='cost per cubic centimetre' required)
+        input(type='number' step='0.01' min='1' name='volumecost' value=instance.volumecost[0] placeholder='cost per cubic centimetre' required)
       br
 
       strong Weight Cost *
       if (instance === null)
-        input(type='number' min='1' name='weightcost' placeholder='cost per gram' required)
+        input(type='number' step='0.01' min='1' name='weightcost' placeholder='cost per gram' required)
       else
-        input(type='number' min='1' name='weightcost' value=instance.weightcost[0] placeholder='cost per per gram' required)
+        input(type='number' step='0.01' min='1' name='weightcost' value=instance.weightcost[0] placeholder='cost per per gram' required)
 
       br
 

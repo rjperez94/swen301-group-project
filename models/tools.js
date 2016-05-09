@@ -177,13 +177,14 @@ function tools () {
   }
 
   //log simulation data aka logData to location fileName e.g. sample.xml will write/overwrite sample.xml in root dir of site
-  this.writeToLog = function(simulation, fileName) {
+  this.writeToLog = function(simulation, fileName, currentMaxID) {
     var xml = builder.buildObject({simulation});
 
     fs.writeFile(fileName, xml,  function(err) {
       if (err) {
         return console.error(err);
       }
+      currentMaxID = currentMaxID+1;
     });
   }
 

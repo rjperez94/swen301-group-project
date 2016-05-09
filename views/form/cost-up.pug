@@ -51,47 +51,47 @@ block content
 
       strong Volume Cost *
       if (instance === null)
-        input(type='number' min='1' name='volumecost' placeholder='cost per cubic centimetre' required)
+        input(type='number' step='0.01' min='1' name='volumecost' placeholder='cost per cubic centimetre' required)
       else
-        input(type='number' min='1' name='volumecost' value=instance.volumecost[0] placeholder='cost per cubic centimetre' required)
+        input(type='number' step='0.01' min='1' name='volumecost' value=instance.volumecost[0] placeholder='cost per cubic centimetre' required)
 
       br
 
       strong Weight Cost *
       if (instance === null)
-        input(type='number' min='1' name='weightcost' placeholder='cost per gram' required)
+        input(type='number' step='0.01' min='1' name='weightcost' placeholder='cost per gram' required)
       else
-        input(type='number' min='1' name='weightcost' value=instance.weightcost[0] placeholder='cost per per gram' required)
+        input(type='number' step='0.01' min='1' name='weightcost' value=instance.weightcost[0] placeholder='cost per per gram' required)
 
       br
 
       strong Maximum Volume *
       if (instance === null)
-        input(type='number' min='1' name='maxVolume' placeholder='cubic centimetres' required)
+        input(type='number' step='0.01' min='1' name='maxVolume' placeholder='cubic centimetres' required)
       else
-        input(type='number' min='1' name='maxVolume' value=instance.maxVolume[0] placeholder='cubic centimetres' required)
+        input(type='number' step='0.01' min='1' name='maxVolume' value=instance.maxVolume[0] placeholder='cubic centimetres' required)
       br
 
       strong Maximum Weight *
       if (instance === null)
-        input(type='number' min='1' name='maxWeight' placeholder='grams' required)
+        input(type='number' step='0.01' min='1' name='maxWeight' placeholder='grams' required)
       else
-        input(type='number' min='1' name='maxWeight' value=instance.maxWeight[0] placeholder='grams' required)
+        input(type='number' step='0.01' min='1' name='maxWeight' value=instance.maxWeight[0] placeholder='grams' required)
 
       br
 
       strong Duration *
       if (instance === null)
-        input(type='number' min='1' name='duration' placeholder='hours' required)
+        input(type='number' step='0.01' min='1' name='duration' placeholder='hours' required)
       else
-        input(type='number' min='1' name='duration' value=instance.duration[0] placeholder='hours' required)
+        input(type='number' step='0.01' min='1' name='duration' value=instance.duration[0] placeholder='hours' required)
       br
 
       strong Frequency *
       if (instance === null)
-        input(type='number' min='1' name='frequency' placeholder='hours' required)
+        input(type='number' step='0.01' min='1' name='frequency' placeholder='hours' required)
       else
-        input(type='number' min='1' name='frequency' value=instance.frequency[0] placeholder='hours' required)
+        input(type='number' step='0.01' min='1' name='frequency' value=instance.frequency[0] placeholder='hours' required)
 
       br
 

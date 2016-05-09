@@ -72,23 +72,11 @@ block content
       br
 
       strong Volume *
-      input(
-        type='number'
-        min='1'
-        name='volume'
-        placeholder='volume in cubic centimetre'
-        required
-      )
+      input(type='number' step='0.01' min='1' name='volume' placeholder='volume in cubic centimetre' required)
       br
 
       strong Weight *
-      input(
-        type='number'
-        min='1'
-        name='weight'
-        placeholder='weight in grams'
-        required
-      )
+      input(type='number' step='0.01' min='1' name='weight' placeholder='weight in grams' required)
       br
 
       p

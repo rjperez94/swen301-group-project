@@ -6,6 +6,17 @@ block content
       href='test'
     ) Test
   h1= title
+
+  script.
+    function checkInput() {
+      if(document.getElementById('newPass').value !== document.getElementById('newRePass').value) {
+        alert('Password and retyped new password are not the same');
+        return false;
+      }
+
+      return true;
+    }
+
   form(action='/login',method='post')
     fieldset
       h2 Login
@@ -59,6 +70,7 @@ block content
       input(
         type='password'
         name='passwordinput'
+        id='newPass'
         placeholder='password'
         required
       )
@@ -69,6 +81,7 @@ block content
       input(
         type='password'
         name='retypepassword'
+        id='newRePass'
         placeholder='re-type password'
         required
       )
@@ -79,6 +92,7 @@ block content
       input(
         type='email'
         name='emailinput'
+        id='email'
         placeholder='recovery email'
         required
       )
@@ -88,4 +102,8 @@ block content
       p
         strong=  'Fields marked with * are required'
 
-      button Submit
+      input(
+        type='submit'
+        value='Submit'
+        onclick='return checkInput()'
+      )

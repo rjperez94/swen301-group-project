@@ -8,8 +8,9 @@ var router = express.Router();
 
 var routeFinder = require('../models/routeFinder.js');
 var tools = new (require('../models/tools.js'));
+var secure = new (require('../models/secure.js'));
 
-var userPath = 'users.json';
+var userPath = 'users';
 var logPath = 'sample2.xml';
 var currentMaxID = 0;
 var eventTypes = ['cost','price','mail','timelimit','discontinue'];
@@ -31,7 +32,7 @@ if(tools.getFileRealPath(userPath)) {
         return console.error(err);
       }
 
-      users = JSON.parse(data.toString());
+      users = JSON.parse(secure.decrypt(data.toString()));
       fs.close(fd, function(err){
         if (err){
           return console.log(err);
@@ -83,8 +84,6 @@ router.get('/', function(req, res) {
 
 // GET: /main
 router.get('/main', function(req, res) {
-  //console.log(req.session);
-
   if(!req.session.user) { //check for login
     res.redirect('/');
   } else {
@@ -134,24 +133,17 @@ router.post('/signup', function(req, res) {
   var pass = req.body.passwordinput;
   var rePass = req.body.retypepassword;
   var email = req.body.emailinput;
+
   //email regex
   var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
   var feedback = [];
 
-  if (users) {
-    var i = tools.getIndex(users,role);
-    if (i >= 0) {
-      feedback.push('Login for user group"'+role+'" already exist');
-      feedback.push('Nothing has been changed');
-    }
-  } else if (pass !== rePass || !re.test(email)) {
-    if (newPass !== newRePass) {
-      feedback.push('New password entered does not match with re-typed password');
-    }
-    if (!re.test(email)) {
-      feedback.push('Invalid email address');
-    }
+  if (!re.test(email)) {
+    feedback.push('Invalid email address');
+    feedback.push('Nothing has been changed');
+  } else if (users && tools.getIndex(users,role) >= 0) {
+    feedback.push('Login for user group"'+role+'" already exist');
     feedback.push('Nothing has been changed');
   } else {
     var text = '{"groups":[';
@@ -159,9 +151,14 @@ router.post('/signup', function(req, res) {
       for (var i = 0; i <users.groups.length; i++) {
         text+='{"user":"'+users.groups[i].user+'", "pass":"'+users.groups[i].pass+'", "email":"'+users.groups[i].email+'"},';
       }
+    } else {
+      users = {'groups':[]};
     }
+    users['groups'].push({'user':role, 'pass':pass, 'email':email});
     text+='{"user":"'+role+'", "pass":"'+pass+'", "email":"'+email+'"}]}';
-    fs.writeFile('users.json', text,  function(err) {
+
+    feedback.push([['You can now log in as '+role+' and your recovery email is '+email]]);
+    fs.writeFile(userPath, secure.encrypt(text),  function(err) {
        if (err) {
            return console.error(err);
        }
@@ -203,20 +200,16 @@ router.post('/edit_process', function(req, res) {
     //email regex
     var re = /^(([^<>()\[\]\.,;:\s@\"]+(\.[^<>()\[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
 
-    var index = getIndex(req.session.user);
+    var index = tools.getIndex(users,req.session.user);
     var feedback = [];
-
-    if (currPass !==  users.groups[index].pass || newPass !== newRePass || !re.test(email)) {
+    if(currPass !==  users.groups[index].pass || !re.test(email)){
       if (currPass !==  users.groups[index].pass) {
         feedback.push(['Current password entered does not match with current password']);
       }
-      if (newPass !== newRePass) {
-        feedback.push(['New password entered does not match with re-typed password']);
-      }
       if (!re.test(email)) {
-        feedback.push(['Invalid email address']);
+        feedback.push('Invalid email address');
       }
-      feedback.push(['Nothing has been changed']);
+      feedback.push('Nothing has been changed');
     } else {
       var text = '{"groups":[';
       if (users) {
@@ -228,12 +221,16 @@ router.post('/edit_process', function(req, res) {
       }
       if (newPass === '') {
         text+='{"user":"'+role+'", "pass":"'+currPass+'", "email":"'+email+'"}]}';
+        users['groups'][index]['pass'] = currPass;
+        users['groups'][index]['email'] = email;
       } else {
         text+='{"user":"'+role+'", "pass":"'+newPass+'", "email":"'+email+'"}]}';
+        users['groups'][index]['pass'] = newPass;
+        users['groups'][index]['email'] = email;
         feedback.push(['Password changed']);
       }
 
-      fs.writeFile('users.json', text,  function(err) {
+      fs.writeFile(userPath, secure.encrypt(text),  function(err) {
         if (err) {
           return console.error(err);
         }
@@ -340,33 +337,45 @@ router.post('/mail', function(req, res) {
     }
 
     if (pathCost !== null) {
-      var dayIndex = new Date().getDay();
-      logData['mail'].push({
-        'ID':[currentMaxID+1],
-        'day':days[dayIndex],
-        'to':[to],
-        'from':[from],
-        'weight':[weight],
-        'volume': [volume],
-        'priority': [scope+' '+priority]
-      });
-      //write to log file
-      tools.writeToLog(logData,logPath);
 
       var feedback = [];
+      var price = null;
       if (scope === 'International') {
-        feedback.push(['Price is $'+tools.getPriceIntl(logData['price'],from,to,scope+' '+priority,weight,volume)]);
+        price=tools.getPriceIntl(logData['price'],from,to,scope+' '+priority,weight,volume);
       } else if(scope === 'Domestic') {
-        feedback.push(['Price is $'+tools.getPriceLoc(logData['price'],scope+' '+priority,weight,volume)]);
+        price=tools.getPriceLoc(logData['price'],scope+' '+priority,weight,volume);
       }
-      feedback.push(['Path is '+pathCost['path']]);
-      feedback.push(['Cost is $'+pathCost['cost']]);
-      feedback.push(['Tranport firms involved: '+pathCost['transport']]);
-      res.render('index/feedback', {
-        title: 'KPSmart - Mail Delivery',
-        username: req.session.user,
-        feedback: feedback
-      });
+
+      if (price !== null) {
+        var dayIndex = new Date().getDay();
+        logData['mail'].push({
+          'ID':[currentMaxID+1],
+          'day':days[dayIndex],
+          'to':[to],
+          'from':[from],
+          'weight':[weight],
+          'volume': [volume],
+          'priority': [scope+' '+priority]
+        });
+        //write to log file
+        tools.writeToLog(logData,logPath, currentMaxID);
+
+        feedback.push(['Price is $'+price]);
+        feedback.push(['Path is '+pathCost['path']]);
+        feedback.push(['Cost is $'+pathCost['cost']]);
+        feedback.push(['Tranport firms involved: '+pathCost['transport']]);
+        res.render('index/feedback', {
+          title: 'KPSmart - Mail Delivery',
+          username: req.session.user,
+          feedback: feedback
+        });
+      } else {
+        res.render('index/feedback', {
+          title: 'KPSmart - Mail Delivery',
+          username: req.session.user,
+          feedback: ['Route is available but has NO associated price']
+        });
+      }
     } else {
       res.render('index/feedback', {
         title: 'KPSmart - Mail Delivery',
@@ -448,7 +457,7 @@ router.post('/discontinue', function(req, res) {
         'type':type
       });
       //write to log file
-      tools.writeToLog(logData,logPath);
+      tools.writeToLog(logData,logPath, currentMaxID);
       res.render('index/feedback', {
         title: 'KPSmart - Close Route',
         username: req.session.user,
@@ -527,7 +536,7 @@ router.post('/price_process', function(req, res) {
 
     var matchID = tools.setToInactive(logData['price'], logData['price'][ logData['price'].length-1 ]);
     //write to log file
-    tools.writeToLog(logData,logPath);
+    tools.writeToLog(logData,logPath, currentMaxID);
 
     var feedback = [['Price update successful']];
     if(matchID !== null) {
@@ -555,7 +564,7 @@ router.get('/price-deactivate', function(req, res) {
         if(instance['active'][0] === 'Yes') {
           instance['active'][0] = 'No';
           //write to log file
-          tools.writeToLog(logData,logPath);
+          tools.writeToLog(logData,logPath, currentMaxID);
 
           feedback.push(['Price update with ID '+instance['ID'][0]+' has been deactivated and is now inactive']);
           feedback.push(['This price deactivation will be logged. But it will NOT create a new price update event']);
@@ -631,7 +640,7 @@ router.post('/cost_process', function(req, res) {
       'day':[day]
     });
     //write to log file
-    tools.writeToLog(logData,logPath);
+    tools.writeToLog(logData,logPath, currentMaxID);
     res.render('index/feedback', {
       title: 'KPSmart - Cost Update',
       username: req.session.user,

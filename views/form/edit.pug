@@ -5,6 +5,16 @@ block content
   include ../shared/login_info.pug
   include ../shared/nav.pug
 
+  script.
+    function checkInput() {
+      if(document.getElementById('newPass').value !== document.getElementById('newRePass').value) {
+        alert('New password and retyped new password are not the same');
+        return false;
+      }
+
+      return true;
+    }
+
   form(action='/edit_process',method='post')
     fieldset
       strong Username *
@@ -32,6 +42,7 @@ block content
       input(
         type='password'
         name='passwordinput'
+        id='newPass'
         placeholder='new password'
       )
 
@@ -41,6 +52,7 @@ block content
       input(
         type='password'
         name='retypepassword'
+        id='newRePass'
         placeholder='re-type new password'
       )
 
@@ -50,6 +62,7 @@ block content
       input(
         type='email'
         name='emailinput'
+        id='email'
         value= email
         placeholder='recovery email'
         required
@@ -59,4 +72,8 @@ block content
       p
         strong=  'Fields marked with * are required'
 
-      button Submit
+      input(
+        type='submit'
+        value='Submit'
+        onclick='return checkInput()'
+      )

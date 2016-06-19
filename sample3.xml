@@ -272,6 +272,15 @@
     <volumecost>6</volumecost>
     <active>Yes</active>
   </price>
+  <price>
+    <ID>38</ID>
+    <to>Japan</to>
+    <from>Wellington</from>
+    <priority>International Standard</priority>
+    <weightcost>5</weightcost>
+    <volumecost>5</volumecost>
+    <active>Yes</active>
+  </price>
   <mail>
     <ID>16</ID>
     <day>Monday</day>
@@ -282,6 +291,7 @@
     <priority>International Air</priority>
     <price>640</price>
     <cost>420</cost>
+    <duration>1</duration>
   </mail>
   <mail>
     <ID>17</ID>
@@ -293,6 +303,7 @@
     <priority>International Air</priority>
     <price>1120</price>
     <cost>320</cost>
+    <duration>1</duration>
   </mail>
   <mail>
     <ID>18</ID>
@@ -304,6 +315,7 @@
     <priority>International Air</priority>
     <price>640</price>
     <cost>420</cost>
+    <duration>15</duration>
   </mail>
   <mail>
     <ID>20</ID>
@@ -315,6 +327,7 @@
     <priority>International Standard</priority>
     <price>500</price>
     <cost>900</cost>
+    <duration>1</duration>
   </mail>
   <mail>
     <ID>24</ID>
@@ -326,6 +339,7 @@
     <priority>Domestic Standard</priority>
     <price>103</price>
     <cost>3</cost>
+    <duration>1</duration>
   </mail>
   <mail>
     <ID>25</ID>
@@ -337,6 +351,7 @@
     <priority>International Air</priority>
     <price>2800</price>
     <cost>450</cost>
+    <duration>15</duration>
   </mail>
   <mail>
     <ID>26</ID>
@@ -348,6 +363,7 @@
     <priority>International Standard</priority>
     <price>800</price>
     <cost>425</cost>
+    <duration>7</duration>
   </mail>
   <mail>
     <ID>27</ID>
@@ -359,6 +375,7 @@
     <priority>International Standard</priority>
     <price>200</price>
     <cost>210</cost>
+    <duration>5</duration>
   </mail>
   <mail>
     <ID>28</ID>
@@ -370,6 +387,7 @@
     <priority>International Air</priority>
     <price>640</price>
     <cost>420</cost>
+    <duration>6</duration>
   </mail>
   <mail>
     <ID>34</ID>
@@ -381,6 +399,7 @@
     <priority>Domestic Standard</priority>
     <price>2</price>
     <cost>1</cost>
+    <duration>2</duration>
   </mail>
   <mail>
     <ID>35</ID>
@@ -392,6 +411,67 @@
     <priority>Domestic Standard</priority>
     <price>8</price>
     <cost>1</cost>
+    <duration>1</duration>
+  </mail>
+  <mail>
+    <ID>37</ID>
+    <day>Monday</day>
+    <to>Wellington</to>
+    <from>Auckland</from>
+    <weight>6</weight>
+    <volume>6</volume>
+    <priority>Domestic Standard</priority>
+    <price>12</price>
+    <cost>6</cost>
+    <duration>7</duration>
+  </mail>
+  <mail>
+    <ID>38</ID>
+    <day>Monday</day>
+    <to>Japan</to>
+    <from>Wellington</from>
+    <weight>6</weight>
+    <volume>5</volume>
+    <priority>International Standard</priority>
+    <price>55</price>
+    <cost>83</cost>
+    <duration>3</duration>
+  </mail>
+  <mail>
+    <ID>38</ID>
+    <day>Monday</day>
+    <to>Suva</to>
+    <from>Wellington</from>
+    <weight>5</weight>
+    <volume>5</volume>
+    <priority>International Standard</priority>
+    <price>25</price>
+    <cost>45</cost>
+    <duration>7</duration>
+  </mail>
+  <mail>
+    <ID>39</ID>
+    <day>Monday</day>
+    <to>Suva</to>
+    <from>Wellington</from>
+    <weight>5</weight>
+    <volume>5</volume>
+    <priority>International Standard</priority>
+    <price>25</price>
+    <cost>45</cost>
+    <duration>9.166666666666666</duration>
+  </mail>
+  <mail>
+    <ID>39</ID>
+    <day>Monday</day>
+    <to>Japan</to>
+    <from>Wellington</from>
+    <weight>6</weight>
+    <volume>5</volume>
+    <priority>International Standard</priority>
+    <price>55</price>
+    <cost>83</cost>
+    <duration>4.333333333333333</duration>
   </mail>
   <timelimit>
     <ID>19</ID>

@@ -14,6 +14,7 @@ function routeFinder(cost,discontinued,local) {
   this.isLocal = true;
 
   this.neigh = {};
+  this.duration = 0;
 
   this.getPath = function (fro,to,pri,wei,vol,includeAir) {
     if (this.locals.indexOf(to) < 0) {
@@ -35,23 +36,44 @@ function routeFinder(cost,discontinued,local) {
       return null;
     } else {
       pathCost['transport'] = this.getTransport(pathCost['path']);
+      pathCost['duration'] = this.duration;
       return pathCost;
     }
   }
 
   this.getTransport = function(path) {
     var result = [];
+    var days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+    var now = new Date().getDay();
+
     for (var i = 1; i < path.length; i++) {
       var abort = false;
       var instance = this.neigh[path[i-1]];
       for (var j = 0; j < instance.length && abort === false; j++) {
         if (instance[j][1] === path[i]) {
           result.push(instance[j][3]+' by '+instance[j][4]);
+          var future = days.indexOf(instance[j][5]);
+          this.duration += this.getDayDifference(now, future, instance[j][6]);
+          now = future;
           abort = true;
         }
       }
     }
     return result;
+  }
+
+  this.getDayDifference = function(now, future, duration) {
+    var index = now;
+    var steps = 0;
+    while (index !== future) {
+      steps++;
+      if(index++ === 6) {
+        index = 0;
+      }
+    }
+    steps += (duration/24);
+    return steps;
   }
 
   this.objectify = function (array) {
@@ -71,6 +93,7 @@ function routeFinder(cost,discontinued,local) {
       var company = this.costs[i]['company'][0];
       var from = this.costs[i]['from'][0];
       var to = this.costs[i]['to'][0];
+      var day = this.costs[i]['day'][0];
       var weightcost = parseFloat(this.costs[i]['weightcost'][0]);
       var volumecost = parseFloat(this.costs[i]['volumecost'][0]);
       var type = this.costs[i]['type'][0];
@@ -80,15 +103,16 @@ function routeFinder(cost,discontinued,local) {
       var maxWeight = parseFloat(this.costs[i]['maxWeight'][0]);
       var maxVolume = parseFloat(this.costs[i]['maxVolume'][0]);
       var forLocal = this.checkLocal(from,to);
+      var duration = parseFloat(this.costs[i]['duration'][0]);
 
       if (validType && wei <= maxWeight && vol <= maxVolume && forLocal === true) {
 
         if (this.neigh[from]) {
           if(this.contains(this.neigh[from], to,from,company,type) === false) {
-            this.neigh[from].push([wei*weightcost+vol*volumecost, to, from, company, type]);
+            this.neigh[from].push([wei*weightcost+vol*volumecost, to, from, company, type, day, duration]);
           }
         } else {
-          this.neigh[from] = [[wei*weightcost+vol*volumecost, to, from, company, type]];
+          this.neigh[from] = [[wei*weightcost+vol*volumecost, to, from, company, type, day, duration]];
         }
       }
 

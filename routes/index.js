@@ -88,13 +88,15 @@ router.get('/main', function(req, res) {
     res.redirect('/');
   } else {
     var limit = currentMaxID;
-    if(req.query.ID && req.query.ID <= limit){
+    if(req.query.ID && req.query.ID >= 0 && req.query.ID <= limit){
       limit = req.query.ID;
     }
     res.render('index/main', {
       title: 'KPSmart - Home',
       username: req.session.user,
-      figures: tools.getFigures(logData, limit)
+      figures: tools.getFigures(logData, limit),
+      limit: limit,
+      max: currentMaxID
     });
   }
 });
@@ -108,7 +110,11 @@ router.post('/login', function(req, res) {
         req.session.user = req.body.username;
         req.session.save();
         //console.log(req.session);
-        res.redirect('/main?ID='+currentMaxID);
+        if(req.body.username === 'Clerk') {
+          res.redirect('/main');
+        } else {
+          res.redirect('/main?ID='+currentMaxID);
+        }
       } else {
         res.render('index/feedback', {
           title: 'KPSmart - Restricted Access',
@@ -364,7 +370,8 @@ router.post('/mail', function(req, res) {
           'volume': [volume],
           'priority': [scope+' '+priority],
           'price': price,
-          'cost': pathCost['cost']
+          'cost': pathCost['cost'],
+          'duration':  pathCost['duration'],
         });
         //write to log file
         tools.writeToLog(logData,logPath, currentMaxID);
@@ -373,6 +380,7 @@ router.post('/mail', function(req, res) {
         feedback.push(['Path is '+pathCost['path']]);
         feedback.push(['Cost is $'+pathCost['cost']]);
         feedback.push(['Tranport firms involved: '+pathCost['transport']]);
+        feedback.push(['Earliest possible delivery time (in days): '+pathCost['duration']]);
         res.render('index/feedback', {
           title: 'KPSmart - Mail Delivery',
           username: req.session.user,
@@ -662,55 +670,6 @@ router.post('/cost_process', function(req, res) {
 //GET: /test
 router.get('/test', function(req, res) {
   //NOTE: Test code here, click Test link in index.pug
-  //test write to log
-  // for (var i = 0; i < logData['mail'].length; i++) {
-  //   //logData[type][#index][attribute][0]
-  //   var from = logData['mail'][i]['from'][0];
-  //   var scope = logData['mail'][i]['priority'][0].split(" ")[0];
-  //   var priority = logData['mail'][i]['priority'][0].split(" ")[1];
-  //   var volume = logData['mail'][i]['volume'][0];
-  //   var weight = logData['mail'][i]['weight'][0];
-  //   var to = logData['mail'][i]['to'][0];
-  //
-  //   var graph = new routeFinder(logData['cost'], logData['discontinue'], local);
-  //   //FORMAT: pathCost['path'] OR pathCost['cost']
-  //   var pathCost;
-  //   if (priority ==='Air') {
-  //     pathCost = graph.getPath(from, to, priority,weight,volume,true);
-  //     console.log(pathCost);
-  //   } else {
-  //     //FORMAT: noAir['path'] OR noAir['cost']
-  //     var noAir = graph.getPath(from, to, priority,weight,volume,false);
-  //     if (noAir !== null) {
-  //       pathCost = noAir;
-  //     } else {
-  //       var yesAir = graph.getPath(from, to, priority,weight,volume,true);
-  //       pathCost = yesAir;
-  //     }
-  //   }
-  //   var price = null;
-  //   if (scope === 'International') {
-  //     price=tools.getPriceIntl(logData['price'],from,to,scope+' '+priority,weight,volume);
-  //   } else if(scope === 'Domestic') {
-  //     price=tools.getPriceLoc(logData['price'],scope+' '+priority,weight,volume);
-  //   }
-  //
-  //   console.log(logData['mail'][i]['ID']+" "+from+" "+to+" "+priority+" "+scope);
-  //   logData['mail'][i]['price'] = [price];
-  //   logData['mail'][i]['cost'] = [pathCost['cost']];
-  //
-  // }
-  //
-  // var xml = builder.buildObject({logData});
-  // fs.writeFile('sample3.xml', xml,  function(err) {
-  //   if (err) {
-  //     return console.error(err);
-  //   }
-  // });
-
-  console.log(tools.getFigures(logData, currentMaxID));
-  //var xml = builder.buildObject({'simulation':{logData}});
-  //console.log(xml);
   res.redirect('/');
 });
 

@@ -30,7 +30,7 @@ block content
       if(value !== 'International' && value !== 'Domestic') {
         alert('Select mail scope');
         return false;
-      } else if(value === 'Local' && document.getElementById('origin').value === document.getElementById('locDropDown').value) {
+      } else if(value === 'Domestic' && document.getElementById('origin').value === document.getElementById('locDropDown').value) {
         alert('Origin and destination cannot be the same');
         return false;
       }

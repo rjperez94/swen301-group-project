@@ -226,25 +226,51 @@ function tools () {
     figures['expenditure'] = 0;
     figures['event'] = limit;
     figures['mail'] = {};
-    figures['time'] = {};
+    figures['routes'] = {};
 
     for (var i = 0; i < logData['mail'].length && parseFloat(logData['mail'][i]['ID'][0]) <= limit; i++) {
       figures['revenue'] += parseFloat(logData['mail'][i]['price'][0]);
       figures['expenditure'] += parseFloat(logData['mail'][i]['cost'][0]);
 
-      var key = logData['mail'][i]['from'][0]+"-"+logData['mail'][i]['to'][0];
-
-      if(figures['mail'].hasOwnProperty(key)){
-        figures['mail'][key]['volume'] += parseFloat(logData['mail'][i]['volume'][0]);
-        figures['mail'][key]['weight'] += parseFloat(logData['mail'][i]['weight'][0]);
-        figures['mail'][key]['items']++;
+      var mailKey = logData['mail'][i]['from'][0]+"-"+logData['mail'][i]['to'][0];
+      if(figures['mail'].hasOwnProperty(mailKey)){
+        figures['mail'][mailKey]['volume'] += parseFloat(logData['mail'][i]['volume'][0]);
+        figures['mail'][mailKey]['weight'] += parseFloat(logData['mail'][i]['weight'][0]);
+        figures['mail'][mailKey]['items']++;
       } else {
-        figures['mail'][key] = {'fromTo': key};
-        figures['mail'][key]['volume'] = parseFloat(logData['mail'][i]['volume'][0]);
-        figures['mail'][key]['weight'] = parseFloat(logData['mail'][i]['weight'][0]);
-        figures['mail'][key]['items'] = 1;
+        figures['mail'][mailKey] = {'fromTo': mailKey};
+        figures['mail'][mailKey]['volume'] = parseFloat(logData['mail'][i]['volume'][0]);
+        figures['mail'][mailKey]['weight'] = parseFloat(logData['mail'][i]['weight'][0]);
+        figures['mail'][mailKey]['items'] = 1;
       }
 
+      var routesKey = logData['mail'][i]['from'][0]+"-"+logData['mail'][i]['to'][0]+" by "+logData['mail'][i]['priority'][0].split(" ")[1];
+      if(figures['routes'].hasOwnProperty(routesKey)){
+        figures['routes'][routesKey]['expenditure'] += parseFloat(logData['mail'][i]['cost'][0]);
+        figures['routes'][routesKey]['revenue'] += parseFloat(logData['mail'][i]['price'][0]);
+        figures['routes'][routesKey]['difference'] += (parseFloat(logData['mail'][i]['price'][0]) - parseFloat(logData['mail'][i]['cost'][0]));
+        figures['routes'][routesKey]['duration'] += parseFloat(logData['mail'][i]['duration'][0]);
+        figures['routes'][routesKey]['items']++;
+      } else {
+        figures['routes'][routesKey] = {'fromToPri': routesKey};
+        figures['routes'][routesKey]['expenditure'] = parseFloat(logData['mail'][i]['cost'][0]);
+        figures['routes'][routesKey]['revenue'] = parseFloat(logData['mail'][i]['price'][0]);
+        figures['routes'][routesKey]['difference'] = (parseFloat(logData['mail'][i]['price'][0]) - parseFloat(logData['mail'][i]['cost'][0]));
+        figures['routes'][routesKey]['duration'] = parseFloat(logData['mail'][i]['duration'][0]);
+        figures['routes'][routesKey]['items'] = 1;
+      }
+    }
+
+    for (var instance in figures['routes']) {
+      figures['routes'][instance]['aveExpenditure'] = figures['routes'][instance]['expenditure']/figures['routes'][instance]['items'];
+      figures['routes'][instance]['aveRevenue'] = figures['routes'][instance]['revenue']/figures['routes'][instance]['items'];
+      figures['routes'][instance]['aveDuration'] = figures['routes'][instance]['duration']/figures['routes'][instance]['items'];
+      figures['routes'][instance]['aveDifference'] = figures['routes'][instance]['difference']/figures['routes'][instance]['items'];
+      if (figures['routes'][instance]['aveExpenditure'] > figures['routes'][instance]['aveRevenue']) {
+        figures['routes'][instance]['critical'] = "Yes";
+      } else {
+        figures['routes'][instance]['critical'] = "No";
+      }
 
     }
 

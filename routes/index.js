@@ -11,7 +11,7 @@ var tools = new (require('../models/tools.js'));
 var secure = new (require('../models/secure.js'));
 
 var userPath = 'users';
-var logPath = 'sample2.xml';
+var logPath = 'sample3.xml';
 var currentMaxID = 0;
 var eventTypes = ['cost','price','mail','timelimit','discontinue'];
 var local = ['Auckland', 'Hamilton', 'Rotorua', 'Palmerston North', 'Wellington', 'Christchurch', 'Dunedin'];
@@ -78,7 +78,7 @@ router.get('/', function(req, res) {
       title: 'KPSmart - Restricted Access'
     });
   } else {
-    res.redirect('/main');
+      res.redirect('/main?ID='+currentMaxID);
   }
 });
 
@@ -87,9 +87,14 @@ router.get('/main', function(req, res) {
   if(!req.session.user) { //check for login
     res.redirect('/');
   } else {
+    var limit = currentMaxID;
+    if(req.query.ID && req.query.ID <= limit){
+      limit = req.query.ID;
+    }
     res.render('index/main', {
       title: 'KPSmart - Home',
-      username: req.session.user
+      username: req.session.user,
+      figures: tools.getFigures(logData, limit)
     });
   }
 });
@@ -103,7 +108,7 @@ router.post('/login', function(req, res) {
         req.session.user = req.body.username;
         req.session.save();
         //console.log(req.session);
-        res.redirect('/main');
+        res.redirect('/main?ID='+currentMaxID);
       } else {
         res.render('index/feedback', {
           title: 'KPSmart - Restricted Access',
@@ -117,7 +122,7 @@ router.post('/login', function(req, res) {
       });
     }
   } else {
-    res.redirect('/main');
+      res.redirect('/main?ID='+currentMaxID);
   }
 });
 
@@ -328,10 +333,12 @@ router.post('/mail', function(req, res) {
     } else {
       //FORMAT: noAir['path'] OR noAir['cost']
       var noAir = graph.getPath(from, to, priority,weight,volume,false);
+      //console.log(noAir);
       if (noAir !== null) {
         pathCost = noAir;
       } else {
         var yesAir = graph.getPath(from, to, priority,weight,volume,true);
+        //console.log(yesAir);
         pathCost = yesAir;
       }
     }
@@ -355,7 +362,9 @@ router.post('/mail', function(req, res) {
           'from':[from],
           'weight':[weight],
           'volume': [volume],
-          'priority': [scope+' '+priority]
+          'priority': [scope+' '+priority],
+          'price': price,
+          'cost': pathCost['cost']
         });
         //write to log file
         tools.writeToLog(logData,logPath, currentMaxID);
@@ -654,8 +663,54 @@ router.post('/cost_process', function(req, res) {
 router.get('/test', function(req, res) {
   //NOTE: Test code here, click Test link in index.pug
   //test write to log
-  var xml = builder.buildObject({'simulation':{logData}});
-  console.log(xml);
+  // for (var i = 0; i < logData['mail'].length; i++) {
+  //   //logData[type][#index][attribute][0]
+  //   var from = logData['mail'][i]['from'][0];
+  //   var scope = logData['mail'][i]['priority'][0].split(" ")[0];
+  //   var priority = logData['mail'][i]['priority'][0].split(" ")[1];
+  //   var volume = logData['mail'][i]['volume'][0];
+  //   var weight = logData['mail'][i]['weight'][0];
+  //   var to = logData['mail'][i]['to'][0];
+  //
+  //   var graph = new routeFinder(logData['cost'], logData['discontinue'], local);
+  //   //FORMAT: pathCost['path'] OR pathCost['cost']
+  //   var pathCost;
+  //   if (priority ==='Air') {
+  //     pathCost = graph.getPath(from, to, priority,weight,volume,true);
+  //     console.log(pathCost);
+  //   } else {
+  //     //FORMAT: noAir['path'] OR noAir['cost']
+  //     var noAir = graph.getPath(from, to, priority,weight,volume,false);
+  //     if (noAir !== null) {
+  //       pathCost = noAir;
+  //     } else {
+  //       var yesAir = graph.getPath(from, to, priority,weight,volume,true);
+  //       pathCost = yesAir;
+  //     }
+  //   }
+  //   var price = null;
+  //   if (scope === 'International') {
+  //     price=tools.getPriceIntl(logData['price'],from,to,scope+' '+priority,weight,volume);
+  //   } else if(scope === 'Domestic') {
+  //     price=tools.getPriceLoc(logData['price'],scope+' '+priority,weight,volume);
+  //   }
+  //
+  //   console.log(logData['mail'][i]['ID']+" "+from+" "+to+" "+priority+" "+scope);
+  //   logData['mail'][i]['price'] = [price];
+  //   logData['mail'][i]['cost'] = [pathCost['cost']];
+  //
+  // }
+  //
+  // var xml = builder.buildObject({logData});
+  // fs.writeFile('sample3.xml', xml,  function(err) {
+  //   if (err) {
+  //     return console.error(err);
+  //   }
+  // });
+
+  console.log(tools.getFigures(logData, currentMaxID));
+  //var xml = builder.buildObject({'simulation':{logData}});
+  //console.log(xml);
   res.redirect('/');
 });
 

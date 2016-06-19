@@ -27,7 +27,7 @@ block content
 
     function checkScope() {
       var value = document.getElementById('scope').value;
-      if(value !== 'International' && value !== 'Local') {
+      if(value !== 'International' && value !== 'Domestic') {
         alert('Select mail scope');
         return false;
       } else if(value === 'Local' && document.getElementById('origin').value === document.getElementById('locDropDown').value) {

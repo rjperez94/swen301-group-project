@@ -61,7 +61,6 @@ function routeFinder(cost,discontinued,local) {
       var to = array[i][1];
       result[to] = parseFloat(cost);
     }
-    //console.log(result);
     return result;
   };
 
@@ -78,11 +77,12 @@ function routeFinder(cost,discontinued,local) {
       //International standard priority requires that the mail be transferred by land or sea (unless air transfer is the only option).
       //International air priority requires the mail to be transferred by air.International standard priority requires that the mail be transferred by land or sea
       var validType = this.validType(pri, type, includeAir);
-      var maxWeight = this.costs[i]['maxWeight'][0];
-      var maxVolume = this.costs[i]['maxVolume'][0];
+      var maxWeight = parseFloat(this.costs[i]['maxWeight'][0]);
+      var maxVolume = parseFloat(this.costs[i]['maxVolume'][0]);
       var forLocal = this.checkLocal(from,to);
 
       if (validType && wei <= maxWeight && vol <= maxVolume && forLocal === true) {
+
         if (this.neigh[from]) {
           if(this.contains(this.neigh[from], to,from,company,type) === false) {
             this.neigh[from].push([wei*weightcost+vol*volumecost, to, from, company, type]);

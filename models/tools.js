@@ -218,6 +218,41 @@ function tools () {
     return null;
   }
 
+  //FORMAT: logData[type][#index][attribute][0]
+  this.getFigures = function(logData,limit) {
+
+    var figures = {};
+    figures['revenue'] = 0;
+    figures['expenditure'] = 0;
+    figures['event'] = limit;
+    figures['mail'] = {};
+    figures['time'] = {};
+
+    for (var i = 0; i < logData['mail'].length && parseFloat(logData['mail'][i]['ID'][0]) <= limit; i++) {
+      figures['revenue'] += parseFloat(logData['mail'][i]['price'][0]);
+      figures['expenditure'] += parseFloat(logData['mail'][i]['cost'][0]);
+
+      var key = logData['mail'][i]['from'][0]+"-"+logData['mail'][i]['to'][0];
+
+      if(figures['mail'].hasOwnProperty(key)){
+        figures['mail'][key]['volume'] += parseFloat(logData['mail'][i]['volume'][0]);
+        figures['mail'][key]['weight'] += parseFloat(logData['mail'][i]['weight'][0]);
+        figures['mail'][key]['items']++;
+      } else {
+        figures['mail'][key] = {'fromTo': key};
+        figures['mail'][key]['volume'] = parseFloat(logData['mail'][i]['volume'][0]);
+        figures['mail'][key]['weight'] = parseFloat(logData['mail'][i]['weight'][0]);
+        figures['mail'][key]['items'] = 1;
+      }
+
+
+    }
+
+    return figures;
+  }
+
 }
+
+
 
 module.exports = tools;

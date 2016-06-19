@@ -1,1 +1,29 @@
 //do business figures display here
+
+strong Total Revenue:
+text $
+text= figures.revenue
+
+br
+strong Total Expenditure:
+text $
+text= figures.expenditure
+
+br
+strong Total Events:
+text= figures.event
+
+br
+br
+strong Amount of mail
+table
+  tr
+    th= 'From-To'
+    th= 'Total Volume'
+    th= 'Total Weight'
+    th= 'Total Items'
+
+  for instance in figures.mail
+    tr
+      for property in instance
+        td= property

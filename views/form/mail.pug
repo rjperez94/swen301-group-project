@@ -2,7 +2,6 @@ extends ../shared/layout.pug
 
 block content
   h1= title
-  include ../shared/login_info.pug
   include ../shared/nav.pug
 
   script.
@@ -38,52 +37,63 @@ block content
       return true;
     }
 
-  form(action='/mail',method='post')
+  form(action='/mail' method='post' class='form-horizontal' role='form')
     fieldset
-      strong Origin *
-      select(id='origin' name='from')
-        for val in localTo
-          option(value=val) #{val}
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='origin') Origin *
+        div(class="col-sm-5")
+          select(id='origin' name='from' class='form-control')
+            for val in localTo
+              option(value=val) #{val}
 
-      strong Scope *
-      select(id='scope' name='scope' onchange='disable()')
-        //option(value=null selected) #{'Please select scope'}
-        for val in scope
-          option(value=val) #{val}
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='scope') Scope *
+        div(class="col-sm-5")
+          select(id='scope' name='scope' onchange='disable()' class='form-control')
+            for val in scope
+              option(value=val) #{val}
 
-      br
-      div(id='toLocal')
-        strong Local Destination*
-        select(id='locDropDown' name='toLocal')
-         for val in localTo
-           option(value=val) #{val}
+      div(id='toLocal' class='form-group')
+        label(class='control-label col-sm-2' for='locDropDown') Local Destination *
+        div(class="col-sm-5")
+          select(id='locDropDown' name='toLocal' class='form-control')
+           for val in localTo
+             option(value=val) #{val}
 
-      div(id='toIntl')
-        strong International Destination*
-        select(name='toIntl')
-         for val in intl
-           option(value=val) #{val}
+      div(id='toIntl' class='form-group')
+        label(class='control-label col-sm-2' for='toIntl') International Destination *
+        div(class="col-sm-5")
+          select(name='toIntl' class='form-control')
+           for val in intl
+             option(value=val) #{val}
 
-      strong Priority *
-      select(name= 'priority')
-        for val in priority
-          option(value=val) #{val}
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='priority') Priority *
+        div(class="col-sm-5")
+          select(name= 'priority' class='form-control')
+            for val in priority
+              option(value=val) #{val}
 
-      strong Volume *
-      input(type='number' step='0.01' min='1' name='volume' placeholder='volume in cubic centimetre' required)
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='volume') Volume *
+        div(class="col-sm-5")
+          input(class='form-control' type='number' step='0.01' min='1' name='volume' placeholder='volume in cubic centimetre' required)
 
-      strong Weight *
-      input(type='number' step='0.01' min='1' name='weight' placeholder='weight in grams' required)
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='weight') Weight *
+        div(class="col-sm-5")
+          input(class='form-control' type='number' step='0.01' min='1' name='weight' placeholder='weight in grams' required)
 
-      p
-        strong=  'Fields marked with * are required'
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          p
+            strong=  'Fields marked with * are required'
 
-      input(
-        type='submit'
-        value='Submit'
-        onclick='return checkScope()'
-      )
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          input(
+            type='submit'
+            value='Submit'
+            onclick='return checkScope()'
+            class='btn btn-default'
+          )

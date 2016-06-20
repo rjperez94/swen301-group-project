@@ -2,7 +2,6 @@ extends ../shared/layout.pug
 
 block content
   h1= title
-  include ../shared/login_info.pug
   include ../shared/nav.pug
 
   script.
@@ -15,65 +14,76 @@ block content
       return true;
     }
 
-  form(action='/edit_process',method='post')
+  form(action='/edit_process' method='post' class='form-horizontal' role='form')
     fieldset
-      strong Username *
-      input(
-        type='text'
-        name='role'
-        value= username
-        disabled
-        required
-      )
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='role') Username *
+        div(class="col-sm-5")
+          input(
+            type='text'
+            name='role'
+            value= username
+            disabled
+            required
+            class='form-control'
+          )
 
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='currentpasswordinput') CURRENT Password *
+        div(class="col-sm-5")
+          input(
+            type='password'
+            name='currentpasswordinput'
+            placeholder='current password'
+            required
+            class='form-control'
+          )
 
-      strong CURRENT Password *
-      input(
-        type='password'
-        name='currentpasswordinput'
-        placeholder='current password'
-        required
-      )
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='newPass') NEW Password
+        div(class="col-sm-5")
+          input(
+            type='password'
+            name='passwordinput'
+            id='newPass'
+            placeholder='new password'
+            class='form-control'
+          )
 
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='newRePass') Re-type NEW password
+        div(class="col-sm-5")
+          input(
+            type='password'
+            name='retypepassword'
+            id='newRePass'
+            placeholder='re-type new password'
+            class='form-control'
+          )
 
-      strong NEW Password
-      input(
-        type='password'
-        name='passwordinput'
-        id='newPass'
-        placeholder='new password'
-      )
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='email') Email *
+        div(class="col-sm-5")
+          input(
+            type='email'
+            name='emailinput'
+            id='email'
+            value= email
+            placeholder='recovery email'
+            required
+            class='form-control'
+          )
 
-      br
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          p
+            strong=  'Fields marked with * are required'
 
-      strong Re-type NEW password
-      input(
-        type='password'
-        name='retypepassword'
-        id='newRePass'
-        placeholder='re-type new password'
-      )
-
-      br
-
-      strong Email *
-      input(
-        type='email'
-        name='emailinput'
-        id='email'
-        value= email
-        placeholder='recovery email'
-        required
-      )
-      br
-
-      p
-        strong=  'Fields marked with * are required'
-
-      input(
-        type='submit'
-        value='Submit'
-        onclick='return checkInput()'
-      )
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          input(
+            type='submit'
+            value='Submit'
+            onclick='return checkInput()'
+            class='btn btn-default'
+          )

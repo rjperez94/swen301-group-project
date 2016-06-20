@@ -1,17 +1,4 @@
-p
-  - var current = parseInt(limit);
-  - var maximum = parseInt(max);
-  if (current > 0)
-    a(
-      href='/main?ID='+(current-1)
-    ) Step Back to Previous Event
-  br
-  if (current < maximum)
-    a(
-      href='/main?ID='+(current+1)
-    ) Go Forward to Next Event
-
-p
+p(class='bg-info')
   strong Total Revenue:
   text $
   text= figures.revenue
@@ -26,37 +13,50 @@ p
   text= figures.event
 
 p
-  strong Amount of mail
-  table
-    tr
-      th= 'From-To'
-      th= 'Total Volume (cubic centimetre)'
-      th= 'Total Weight (gram)'
-      th= 'Total Items'
-
-    for instance in figures.mail
+  h3 Amount of mail
+  div(class='table-responsive')
+    table(class='table table-hover table-condensed')
       tr
-        for property in instance
-          td= property
+        th= 'From-To'
+        th= 'Total Volume (cubic centimetre)'
+        th= 'Total Weight (gram)'
+        th= 'Total Items'
+
+      for instance in figures.mail
+        tr
+          for property in instance
+            td= property
 
 
 p
-  strong Average Delivery Times and Critical Routes
-  table
-    tr
-      th= 'From-To'
-      th= 'Total Expenditure $'
-      th= 'Total Revenue $'
-      th= 'Total Price to Cost Difference $'
-      th= 'Total Duration (days)'
-      th= 'Total Items'
-      th= 'Average Expenditure $'
-      th= 'Average Revenue $'
-      th= 'Average Delivery (days)'
-      th= 'Price to Cost Ratio $'
-      th= 'Critical?'
-
-    for instance in figures.routes
+  h3 Average Delivery Times and Critical Routes
+  div(class='table-responsive')
+    table(class='table table-hover table-condensed')
       tr
-        for property in instance
-          td= property
+        th= 'From-To'
+        th= 'Total Expenditure $'
+        th= 'Total Revenue $'
+        th= 'Total Price to Cost Difference $'
+        th= 'Total Duration (days)'
+        th= 'Total Items'
+        th= 'Average Expenditure $'
+        th= 'Average Revenue $'
+        th= 'Average Delivery (days)'
+        th= 'Price to Cost Ratio $'
+        th= 'Critical?'
+
+      for instance in figures.routes
+        tr
+          for property in instance
+            td= property
+
+p
+  - var current = parseInt(limit);
+  - var maximum = parseInt(max);
+  if (current > 0)
+    a(href='/main?ID='+(current-1))
+      button(type='button' class='btn btn-primary') Step Back to Previous Event
+
+  if (current < maximum)
+    a(href='/main?ID='+(current+1))
+      button(type='button' class='btn btn-primary') Go Forward to Next Event

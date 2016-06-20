@@ -2,7 +2,6 @@ extends ../shared/layout.pug
 
 block content
   h1= title
-  include ../shared/login_info.pug
   include ../shared/nav.pug
 
   script.
@@ -15,104 +14,113 @@ block content
       return true;
     }
 
-  form(action='/cost_process',method='post')
+  form(action='/cost_process' method='post' class='form-horizontal' role='form')
     fieldset
-      strong Company *
-      if (instance === null)
-        input(type='text' name='company' placeholder='enter company name' required)
-      else
-        input(type='text' name='company' value=instance.company[0]  placeholder='enter company name' required)
-      br
-
-      strong Origin *
-      if (instance === null)
-        input(type='text' id='origin' name='from' placeholder='enter city name' required)
-      else
-        input(type='text' id='origin' name='from' value=instance.from[0]  placeholder='enter city name' required)
-
-      br
-
-      strong Destination *
-      if (instance === null)
-        input(type='text' id='to' name='to' placeholder='enter city name' required)
-      else
-        input(type='text' id='to' name='to' value=instance.to[0]  placeholder='enter city name' required)
-
-      br
-
-      strong Type *
-      select(name='type')
-        for val in type
-          if (instance === null || instance.type[0] !== val)
-            option(value=val) #{val}
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='company') Company *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='text' name='company' placeholder='enter company name' required)
           else
-            option(value=val selected) #{val}
-      br
+            input(class='form-control' type='text' name='company' value=instance.company[0]  placeholder='enter company name' required)
 
-      strong Volume Cost *
-      if (instance === null)
-        input(type='number' step='0.01' min='1' name='volumecost' placeholder='cost per cubic centimetre' required)
-      else
-        input(type='number' step='0.01' min='1' name='volumecost' value=instance.volumecost[0] placeholder='cost per cubic centimetre' required)
-
-      br
-
-      strong Weight Cost *
-      if (instance === null)
-        input(type='number' step='0.01' min='1' name='weightcost' placeholder='cost per gram' required)
-      else
-        input(type='number' step='0.01' min='1' name='weightcost' value=instance.weightcost[0] placeholder='cost per per gram' required)
-
-      br
-
-      strong Maximum Volume *
-      if (instance === null)
-        input(type='number' step='0.01' min='1' name='maxVolume' placeholder='cubic centimetres' required)
-      else
-        input(type='number' step='0.01' min='1' name='maxVolume' value=instance.maxVolume[0] placeholder='cubic centimetres' required)
-      br
-
-      strong Maximum Weight *
-      if (instance === null)
-        input(type='number' step='0.01' min='1' name='maxWeight' placeholder='grams' required)
-      else
-        input(type='number' step='0.01' min='1' name='maxWeight' value=instance.maxWeight[0] placeholder='grams' required)
-
-      br
-
-      strong Duration *
-      if (instance === null)
-        input(type='number' step='0.01' min='1' name='duration' placeholder='hours' required)
-      else
-        input(type='number' step='0.01' min='1' name='duration' value=instance.duration[0] placeholder='hours' required)
-      br
-
-      strong Frequency *
-      if (instance === null)
-        input(type='number' step='0.01' min='1' name='frequency' placeholder='hours' required)
-      else
-        input(type='number' step='0.01' min='1' name='frequency' value=instance.frequency[0] placeholder='hours' required)
-
-      br
-
-      strong Day *
-      select(name='day')
-        for val in days
-          if (instance === null || instance.day[0] !== val)
-            option(value=val) #{val}
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='origin') Origin *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='text' id='origin' name='from' placeholder='enter city name' required)
           else
-            option(value=val selected) #{val}
+            input(class='form-control' type='text' id='origin' name='from' value=instance.from[0]  placeholder='enter city name' required)
 
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='to') Destination *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='text' id='to' name='to' placeholder='enter city name' required)
+          else
+            input(class='form-control' type='text' id='to' name='to' value=instance.to[0]  placeholder='enter city name' required)
 
-      if (instance !== null)
-        p= 'This form has been pre-filled. You may choose to change these values'
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='type') Type *
+        div(class="col-sm-5")
+          select(name='type' class='form-control')
+            for val in type
+              if (instance === null || instance.type[0] !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
 
-      p
-        strong=  'Fields marked with * are required'
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='volumecost') Volume Cost *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='number' step='0.01' min='1' name='volumecost' placeholder='cost per cubic centimetre' required)
+          else
+            input(class='form-control' type='number' step='0.01' min='1' name='volumecost' value=instance.volumecost[0] placeholder='cost per cubic centimetre' required)
 
-      input(
-        type='submit'
-        value='Submit'
-        onclick='return checkFromTo()'
-      )
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='weightcost') Weight Cost *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='number' step='0.01' min='1' name='weightcost' placeholder='cost per gram' required)
+          else
+            input(class='form-control' type='number' step='0.01' min='1' name='weightcost' value=instance.weightcost[0] placeholder='cost per per gram' required)
+
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='maxVolume') Maximum Volume *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='number' step='0.01' min='1' name='maxVolume' placeholder='cubic centimetres' required)
+          else
+            input(class='form-control' type='number' step='0.01' min='1' name='maxVolume' value=instance.maxVolume[0] placeholder='cubic centimetres' required)
+
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='maxWeight') Maximum Weight *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='number' step='0.01' min='1' name='maxWeight' placeholder='grams' required)
+          else
+            input(class='form-control' type='number' step='0.01' min='1' name='maxWeight' value=instance.maxWeight[0] placeholder='grams' required)
+
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='duration') Duration *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='number' step='0.01' min='1' name='duration' placeholder='hours' required)
+          else
+            input(class='form-control' type='number' step='0.01' min='1' name='duration' value=instance.duration[0] placeholder='hours' required)
+
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='frequency') Frequency *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='number' step='0.01' min='1' name='frequency' placeholder='hours' required)
+          else
+            input(class='form-control' type='number' step='0.01' min='1' name='frequency' value=instance.frequency[0] placeholder='hours' required)
+
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='day') Day *
+        div(class="col-sm-5")
+          select(name='day' class='form-control')
+            for val in days
+              if (instance === null || instance.day[0] !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
+
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          if (instance !== null)
+            p= 'This form has been pre-filled. You may choose to change these values'
+
+          p
+            strong=  'Fields marked with * are required'
+
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          input(
+            type='submit'
+            value='Submit'
+            onclick='return checkFromTo()'
+            class='btn btn-default'
+          )

@@ -2,22 +2,22 @@ extends ../shared/layout.pug
 
 block content
   h1= title
-  include ../shared/login_info.pug
   include ../shared/nav.pug
 
-  table
-    tr
-      for val in headings
-        th= val
-      th= 'Update'
-      th= 'Discontinue'
-
-    for instance in costs
+  div(class='table-responsive')
+    table(class='table table-hover table-condensed')
       tr
-      for val in instance
-        for i in val
-          td= i
-      td
-        a(href='cost-up?ID='+instance.ID) cost update pre-fill
-      td
-        a(href='close-rt?ID='+instance.ID) discontinue pre-fill
+        for val in headings
+          th= val
+        th= 'Update'
+        th= 'Discontinue'
+
+      for instance in costs
+        tr
+        for val in instance
+          for i in val
+            td= i
+        td
+          a(href='cost-up?ID='+instance.ID) cost update pre-fill
+        td
+          a(href='close-rt?ID='+instance.ID) discontinue pre-fill

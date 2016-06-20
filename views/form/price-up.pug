@@ -2,7 +2,6 @@ extends ../shared/layout.pug
 
 block content
   h1= title
-  include ../shared/login_info.pug
   include ../shared/nav.pug
 
   script.
@@ -37,7 +36,7 @@ block content
       return true;
     }
 
-  form(action='/price_process',method='post')
+  form(action='/price_process' method='post' class='form-horizontal' role='form')
     - var sco
     - var pri
 
@@ -47,65 +46,71 @@ block content
       - pri = array[1]
 
     fieldset
-      strong Scope *
-      select(id='scope' name='scope' onchange='disable()')
-        for val in scope
-          if (instance === null || sco !== val)
-            option(value=val) #{val}
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='scope') Scope *
+        div(class="col-sm-5")
+          select(id='scope' name='scope' onchange='disable()' class='form-control')
+            for val in scope
+              if (instance === null || sco !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
+
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='priority') Priority *
+        div(class="col-sm-5")
+          select(name= 'priority' class='form-control')
+            for val in priority
+              if (instance === null || pri !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
+
+      div(id='origin' class='form-group')
+        label(class='control-label col-sm-2' for='from') Origin *
+        div(class="col-sm-5")
+          select(id='from' name='from' class='form-control')
+            for val in froms
+              if (instance === null || instance.from[0] !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
+
+      div(id='dest' class='form-group')
+        label(class='control-label col-sm-2' for='to') Destination *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='text' id='to' name='to' placeholder='enter city name' required)
           else
-            option(value=val selected) #{val}
+            input(class='form-control' type='text' id='to' name='to' value=instance.to[0]  placeholder='enter city name' required)
 
-      br
-
-      strong Priority *
-      select(name= 'priority')
-        for val in priority
-          if (instance === null || pri !== val)
-            option(value=val) #{val}
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='volumecost') Volume Cost *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='number' step='0.01' min='1' name='volumecost' placeholder='cost per cubic centimetre' required)
           else
-            option(value=val selected) #{val}
+            input(class='form-control' type='number' step='0.01' min='1' name='volumecost' value=instance.volumecost[0] placeholder='cost per cubic centimetre' required)
 
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='weightcost') Weight Cost *
+        div(class="col-sm-5")
+          if (instance === null)
+            input(class='form-control' type='number' step='0.01' min='1' name='weightcost' placeholder='cost per gram' required)
+          else
+            input(class='form-control' type='number' step='0.01' min='1' name='weightcost' value=instance.weightcost[0] placeholder='cost per per gram' required)
 
-      div(id='origin')
-        strong Origin *
-        select(id='from' name='from')
-          for val in froms
-            if (instance === null || instance.from[0] !== val)
-              option(value=val) #{val}
-            else
-              option(value=val selected) #{val}
-
-      div(id='dest')
-        strong Destination *
-        if (instance === null)
-          input(type='text' id='to' name='to' placeholder='enter city name' required)
-        else
-          input(type='text' id='to' name='to' value=instance.to[0]  placeholder='enter city name' required)
-
-      strong Volume Cost *
-      if (instance === null)
-        input(type='number' step='0.01' min='1' name='volumecost' placeholder='cost per cubic centimetre' required)
-      else
-        input(type='number' step='0.01' min='1' name='volumecost' value=instance.volumecost[0] placeholder='cost per cubic centimetre' required)
-      br
-
-      strong Weight Cost *
-      if (instance === null)
-        input(type='number' step='0.01' min='1' name='weightcost' placeholder='cost per gram' required)
-      else
-        input(type='number' step='0.01' min='1' name='weightcost' value=instance.weightcost[0] placeholder='cost per per gram' required)
-
-      br
-
-      if (instance !== null)
-        p= 'This form has been pre-filled. You may choose to change these values'
-
-      p
-        strong=  'Fields marked with * are required'
-
-      input(
-        type='submit'
-        value='Submit'
-        onclick='return checkFromTo()'
-      )
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          if (instance !== null)
+            p= 'This form has been pre-filled. You may choose to change these values'
+          p
+            strong=  'Fields marked with * are required'
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          input(
+            type='submit'
+            value='Submit'
+            onclick='return checkFromTo()'
+            class='btn btn-default'
+          )

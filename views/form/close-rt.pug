@@ -2,7 +2,6 @@ extends ../shared/layout.pug
 
 block content
   h1= title
-  include ../shared/login_info.pug
   include ../shared/nav.pug
 
   script.
@@ -15,52 +14,61 @@ block content
       return true;
     }
 
-  form(action='/discontinue',method='post')
+  form(action='/discontinue' method='post' class='form-horizontal' role='form')
     fieldset
-      strong Company *
-      select(name='company')
-        for val in company
-          if (instance === null || instance.company[0] !== val)
-            option(value=val) #{val}
-          else
-            option(value=val selected) #{val}
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='company') Company *
+        div(class="col-sm-5")
+          select(name='company' class='form-control')
+            for val in company
+              if (instance === null || instance.company[0] !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
 
-      strong Origin *
-      select(id='origin' name='from')
-        for val in from
-          if (instance === null || instance.from[0] !== val)
-            option(value=val) #{val}
-          else
-            option(value=val selected) #{val}
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='origin') Origin *
+        div(class="col-sm-5")
+          select(id='origin' class='form-control' name='from')
+            for val in from
+              if (instance === null || instance.from[0] !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
 
-      strong Destination *
-      select(id='dest' name='to')
-        for val in to
-          if (instance === null || instance.to[0] !== val)
-            option(value=val) #{val}
-          else
-            option(value=val selected) #{val}
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='dest') Destination *
+        div(class="col-sm-5")
+          select(id='dest' name='to' class='form-control')
+            for val in to
+              if (instance === null || instance.to[0] !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
 
-      strong Type *
-      select(name='type')
-        for val in type
-          if (instance === null || instance.type[0] !== val)
-            option(value=val) #{val}
-          else
-            option(value=val selected) #{val}
-      br
+      div(class='form-group')
+        label(class='control-label col-sm-2' for='type') Type *
+        div(class="col-sm-5")
+          select(name='type' class='form-control')
+            for val in type
+              if (instance === null || instance.type[0] !== val)
+                option(value=val) #{val}
+              else
+                option(value=val selected) #{val}
 
-      if (instance !== null)
-        p= 'This form has been pre-filled. You may choose to change these values'
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          if (instance !== null)
+            p= 'This form has been pre-filled. You may choose to change these values'
 
-      p
-        strong=  'Fields marked with * are required'
+          p
+            strong=  'Fields marked with * are required'
 
-      input(
-        type='submit'
-        value='Submit'
-        onclick='return checkFromTo()'
-      )
+      div(class='form-group')
+        div(class='col-sm-offset-2 col-sm-10')
+          input(
+            type='submit'
+            value='Submit'
+            onclick='return checkFromTo()'
+            class='btn btn-default'
+          )

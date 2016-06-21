@@ -225,7 +225,7 @@
     <priority>Domestic Standard</priority>
     <weightcost>1</weightcost>
     <volumecost>1</volumecost>
-    <active>Yes</active>
+    <active>No</active>
   </price>
   <price>
     <ID>15</ID>
@@ -279,6 +279,24 @@
     <priority>International Standard</priority>
     <weightcost>5</weightcost>
     <volumecost>5</volumecost>
+    <active>Yes</active>
+  </price>
+  <price>
+    <ID>40</ID>
+    <to>Manila</to>
+    <from>Auckland</from>
+    <priority>International Standard</priority>
+    <weightcost>34</weightcost>
+    <volumecost>12</volumecost>
+    <active>Yes</active>
+  </price>
+  <price>
+    <ID>40</ID>
+    <to>New Zealand</to>
+    <from>New Zealand</from>
+    <priority>Domestic Standard</priority>
+    <weightcost>12</weightcost>
+    <volumecost>12</volumecost>
     <active>Yes</active>
   </price>
   <mail>
@@ -472,6 +490,18 @@
     <price>55</price>
     <cost>83</cost>
     <duration>4.333333333333333</duration>
+  </mail>
+  <mail>
+    <ID>40</ID>
+    <day>Tuesday</day>
+    <to>Wellington</to>
+    <from>Auckland</from>
+    <weight>42</weight>
+    <volume>12</volume>
+    <priority>Domestic Standard</priority>
+    <price>54</price>
+    <cost>12</cost>
+    <duration>2.5833333333333335</duration>
   </mail>
   <timelimit>
     <ID>19</ID>

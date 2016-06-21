@@ -33,6 +33,9 @@ block content
         return false;
       }
 
+      if(document.getElementById('scope').value === 'Domestic') {
+        document.getElementById('to').value = ' ';
+      }
       return true;
     }
 
@@ -106,6 +109,7 @@ block content
             p= 'This form has been pre-filled. You may choose to change these values'
           p
             strong=  'Fields marked with * are required'
+
       div(class='form-group')
         div(class='col-sm-offset-2 col-sm-10')
           input(

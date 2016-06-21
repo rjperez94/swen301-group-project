@@ -283,21 +283,12 @@
   </price>
   <price>
     <ID>40</ID>
-    <to>Manila</to>
-    <from>Auckland</from>
-    <priority>International Standard</priority>
-    <weightcost>34</weightcost>
-    <volumecost>12</volumecost>
-    <active>Yes</active>
-  </price>
-  <price>
-    <ID>40</ID>
     <to>New Zealand</to>
     <from>New Zealand</from>
     <priority>Domestic Standard</priority>
     <weightcost>12</weightcost>
     <volumecost>12</volumecost>
-    <active>Yes</active>
+    <active>No</active>
   </price>
   <mail>
     <ID>16</ID>

@@ -375,6 +375,7 @@ router.post('/mail', function(req, res) {
         });
         //write to log file
         tools.writeToLog(logData,logPath, currentMaxID);
+        currentMaxID++;
 
         feedback.push(['Price is $'+price]);
         feedback.push(['Path is '+pathCost['path']]);
@@ -475,6 +476,8 @@ router.post('/discontinue', function(req, res) {
       });
       //write to log file
       tools.writeToLog(logData,logPath, currentMaxID);
+      currentMaxID++;
+
       res.render('index/feedback', {
         title: 'KPSmart - Close Route',
         username: req.session.user,
@@ -554,6 +557,7 @@ router.post('/price_process', function(req, res) {
     var matchID = tools.setToInactive(logData['price'], logData['price'][ logData['price'].length-1 ]);
     //write to log file
     tools.writeToLog(logData,logPath, currentMaxID);
+    currentMaxID++;
 
     var feedback = [['Price update successful']];
     if(matchID !== null) {
@@ -658,6 +662,8 @@ router.post('/cost_process', function(req, res) {
     });
     //write to log file
     tools.writeToLog(logData,logPath, currentMaxID);
+    currentMaxID++;
+
     res.render('index/feedback', {
       title: 'KPSmart - Cost Update',
       username: req.session.user,
@@ -670,6 +676,7 @@ router.post('/cost_process', function(req, res) {
 //GET: /test
 router.get('/test', function(req, res) {
   //NOTE: Test code here, click Test link in index.pug
+  console.log(currentMaxID);
   res.redirect('/');
 });
 

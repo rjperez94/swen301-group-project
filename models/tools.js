@@ -184,7 +184,6 @@ function tools () {
       if (err) {
         return console.error(err);
       }
-      currentMaxID = currentMaxID+1;
     });
   }
 

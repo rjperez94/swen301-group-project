@@ -369,9 +369,9 @@ router.post('/mail', function(req, res) {
           'weight':[weight],
           'volume': [volume],
           'priority': [scope+' '+priority],
-          'price': price,
-          'cost': pathCost['cost'],
-          'duration':  pathCost['duration'],
+          'price': [price],
+          'cost': [pathCost['cost']],
+          'duration':  [pathCost['duration']],
         });
         //write to log file
         tools.writeToLog(logData,logPath, currentMaxID);

@@ -1,6 +1,6 @@
 # KPS POS system
 
-##Setup
+## Setup
 
 1. Download and install Node.js (LTS) from <a href="https://nodejs.org/en/download/">here</a>
 2. Make a new folder where you will put the website contents. Anywhere in your computer will do. For demonstaration, we will use `kps` (You may change the name, if you want)

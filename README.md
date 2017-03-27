@@ -14,3 +14,6 @@
 You can now view the site my going to <a href="https://www.localhost:3000">http://localhost:3000</a> in your browser. <strong>Make sure that the server is always started before you do this by doing `node server.js` in terminal/cmd in `kps` directory</strong>
 
 To view a working demonstration of the features of this project, visit <a href="http://kps-ron.herokuapp.com/"> http://kps-ron.herokuapp.com/</a>. The username is `Manager` and the password is `q`
+
+
+Please <a href="https://github.com/rjperez94/swen301-group-project/blob/master/kps-brief.pdf">click here</a> for more information about this project
